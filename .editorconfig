@@ -1,0 +1,25 @@
+﻿[*.cs]
+
+# HAA0502: Explicit new reference type allocation
+dotnet_diagnostic.HAA0502.severity = none
+
+# HAA0501: Explicit new array type allocation
+dotnet_diagnostic.HAA0501.severity = none
+
+# HAA0505: Initializer reference type allocation
+dotnet_diagnostic.HAA0505.severity = none
+
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = none
+
+# IDE0003: Remove qualification
+dotnet_style_qualification_for_field = false:none
+
+# IDE0003: Remove qualification
+dotnet_style_qualification_for_property = false:none
+
+# IDE0003: Remove qualification
+dotnet_style_qualification_for_event = false:none
+
+# IDE0003: Remove qualification
+dotnet_style_qualification_for_method = false:none
