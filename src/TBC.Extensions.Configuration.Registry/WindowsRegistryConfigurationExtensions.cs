@@ -23,6 +23,7 @@
 namespace Microsoft.Extensions.Configuration
 {
     using System;
+    using System.Runtime.InteropServices;
     using Microsoft.Win32;
     using TBC.Extensions.Configuration.Registry;
 
@@ -48,6 +49,11 @@ namespace Microsoft.Extensions.Configuration
             if (string.IsNullOrWhiteSpace(rootKey))
             {
                 throw new ArgumentNullException(nameof(rootKey));
+            }
+
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                throw new PlatformNotSupportedException("Windows Registry configuration provider is not supported on non-Windows platforms.");
             }
 
             return builder.Add(new WindowsRegistryConfigurationSource(new WindowsRegistryConfigurationOptions(rootKey, registryHive)));
