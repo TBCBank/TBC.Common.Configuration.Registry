@@ -5,6 +5,7 @@
         <LangVersion>latest</LangVersion>
         <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageVersion>1.0.0-pre</PackageVersion>
         <Authors>Giorgi Chakhidze</Authors>
         <Company>TBC Bank</Company>
         <Copyright>2019 TBC Bank</Copyright>
