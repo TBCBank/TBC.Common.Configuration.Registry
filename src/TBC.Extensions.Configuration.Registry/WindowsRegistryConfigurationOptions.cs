@@ -41,13 +41,6 @@ namespace TBC.Extensions.Configuration.Registry
         public RegistryHive RegistryHive { get; set; } = RegistryHive.LocalMachine;
 
         /// <summary>
-        /// Initializes a new instance.
-        /// </summary>
-        public WindowsRegistryConfigurationOptions()
-        {
-        }
-
-        /// <summary>
         /// Initializes a new instance with the specified options.
         /// </summary>
         /// <param name="rootKey">The root key path.</param>
