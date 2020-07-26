@@ -23,9 +23,6 @@
 namespace TBC.Extensions.Configuration.Registry.Tests
 {
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Globalization;
     using System.Linq;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Win32;
