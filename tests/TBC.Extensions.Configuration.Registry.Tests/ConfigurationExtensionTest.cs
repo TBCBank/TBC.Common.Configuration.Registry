@@ -69,6 +69,16 @@ namespace TBC.Extensions.Configuration.Registry.Tests
             Assert.NotEmpty(settings);
         }
 
+        [Fact(DisplayName = "AddWindowsRegistry Optional")]
+        public void AddWindowsRegistry_BuildOptionalConfiguration()
+        {
+            var settings = new ConfigurationBuilder()
+                .AddWindowsRegistry($"SOFTWARE\\DoesNotExist\\{Guid.NewGuid():N}", RegistryHive.CurrentUser, optional: true)
+                .Build();
+
+            Assert.NotNull(settings);
+        }
+
         [Fact(DisplayName = "WindowsRegistryConfigurationProvider Array")]
         public void WindowsRegistryConfigurationProvider_ReadArray()
         {

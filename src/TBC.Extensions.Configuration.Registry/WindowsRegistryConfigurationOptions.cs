@@ -41,6 +41,11 @@ namespace TBC.Extensions.Configuration.Registry
         public RegistryHive RegistryHive { get; set; } = RegistryHive.LocalMachine;
 
         /// <summary>
+        /// Determines if loading the configuration is optional.
+        /// </summary>
+        public bool Optional { get; set; }
+
+        /// <summary>
         /// Initializes a new instance with the specified options.
         /// </summary>
         /// <param name="rootKey">The root key path.</param>
@@ -54,6 +59,7 @@ namespace TBC.Extensions.Configuration.Registry
 
             this.RootKey = rootKey;
             this.RegistryHive = registryHive;
+            this.Optional = true;
         }
     }
 }

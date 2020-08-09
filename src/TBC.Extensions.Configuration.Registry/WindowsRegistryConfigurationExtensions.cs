@@ -38,11 +38,13 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="rootKey">The root key path.</param>
         /// <param name="registryHive">Top-level Windows Registry hive.</param>
+        /// <param name="optional">Whether or not the Registry key is optional.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
         public static IConfigurationBuilder AddWindowsRegistry(
             this IConfigurationBuilder builder,
             string rootKey,
-            RegistryHive registryHive = RegistryHive.LocalMachine)
+            RegistryHive registryHive = RegistryHive.LocalMachine,
+            bool optional = true)
         {
             _ = builder ?? throw new ArgumentNullException(nameof(builder));
 
@@ -51,12 +53,14 @@ namespace Microsoft.Extensions.Configuration
                 throw new ArgumentNullException(nameof(rootKey));
             }
 
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                throw new PlatformNotSupportedException("Windows Registry configuration provider is not supported on non-Windows platforms.");
+                return builder.Add(
+                    new WindowsRegistryConfigurationSource(
+                        new WindowsRegistryConfigurationOptions(rootKey, registryHive) { Optional = optional }));
             }
 
-            return builder.Add(new WindowsRegistryConfigurationSource(new WindowsRegistryConfigurationOptions(rootKey, registryHive)));
+            return builder;
         }
     }
 }

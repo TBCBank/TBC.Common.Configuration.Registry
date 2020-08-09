@@ -34,13 +34,16 @@ namespace TBC.Extensions.Configuration.Registry
         private readonly Stack<string> _context = new Stack<string>();
         private string _currentPath;
         private RegistryKey _rootKey;
+        private readonly bool _optional;
 
-        public WindowsRegistryTreeWalker(string rootKeyPath, RegistryHive registryHive = RegistryHive.LocalMachine)
+        public WindowsRegistryTreeWalker(string rootKeyPath, RegistryHive registryHive = RegistryHive.LocalMachine, bool optional = true)
         {
             if (string.IsNullOrWhiteSpace(rootKeyPath))
             {
                 throw new ArgumentNullException(nameof(rootKeyPath));
             }
+
+            _optional = optional;
 
             _rootKey = registryHive switch
             {
@@ -49,7 +52,7 @@ namespace TBC.Extensions.Configuration.Registry
                 _ => throw new ArgumentOutOfRangeException(nameof(registryHive)),
             };
 
-            if (_rootKey == null)
+            if (_rootKey == null && !optional)
             {
                 throw new InvalidOperationException($"Registry key '{rootKeyPath}' was not found.");
             }
@@ -69,6 +72,11 @@ namespace TBC.Extensions.Configuration.Registry
 
         public IDictionary<string, string> ParseTree()
         {
+            if (_optional && _rootKey == null)
+            {
+                return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            }
+
             _data.Clear();
             VisitRegistryKey(_rootKey);
             return _data;
