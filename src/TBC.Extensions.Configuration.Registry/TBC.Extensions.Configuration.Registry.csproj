@@ -5,7 +5,7 @@
         <LangVersion>latest</LangVersion>
         <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.0.0</PackageVersion>
+        <PackageVersion>1.0.1</PackageVersion>
         <Authors>Giorgi Chakhidze</Authors>
         <Company>TBC Bank</Company>
         <Copyright>2019 TBC Bank</Copyright>
@@ -16,6 +16,8 @@
         <Description>Adds Windows Registry support to ASP.NET Core configuration system.</Description>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildThisFileName).xml</DocumentationFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>icon.png</PackageIcon>
     </PropertyGroup>
 
     <ItemGroup>
@@ -51,6 +53,10 @@
             <_Parameter1>BuildId</_Parameter1>
             <_Parameter2>$(BuildId)</_Parameter2>
         </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="images\icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>
