@@ -27,4 +27,4 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
 
     - name: Push
-      run: dotnet nuget push "src\TBC.Extensions.Configuration.Registry\bin\Release\*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json"
+      run: dotnet nuget push "src\TBC.Common.Configuration.Registry\bin\Release\*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json"

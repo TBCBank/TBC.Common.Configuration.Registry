@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B3BAD1E2-1B9F-4F6A-9536-BD335F9666FD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TBC.Extensions.Configuration.Registry", "src\TBC.Extensions.Configuration.Registry\TBC.Extensions.Configuration.Registry.csproj", "{C8999B57-69C4-43DE-9BA4-31E7CAF66B51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TBC.Common.Configuration.Registry", "src\TBC.Common.Configuration.Registry\TBC.Common.Configuration.Registry.csproj", "{C8999B57-69C4-43DE-9BA4-31E7CAF66B51}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E4410D56-3FAC-4E2D-BA48-498A9CD7E56A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBC.Extensions.Configuration.Registry.Tests", "tests\TBC.Extensions.Configuration.Registry.Tests\TBC.Extensions.Configuration.Registry.Tests.csproj", "{43A63283-F527-462C-9022-4980CFBE4B0A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBC.Common.Configuration.Registry.Tests", "tests\TBC.Common.Configuration.Registry.Tests\TBC.Common.Configuration.Registry.Tests.csproj", "{43A63283-F527-462C-9022-4980CFBE4B0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

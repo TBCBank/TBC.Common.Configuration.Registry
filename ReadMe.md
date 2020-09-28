@@ -1,7 +1,7 @@
 
 # Windows Registry based ASP.NET Core Configuration Provider
 
-[![NuGet version (TBC.Extensions.Configuration.Registry)](https://img.shields.io/nuget/v/TBC.Extensions.Configuration.Registry.svg)](https://www.nuget.org/packages/TBC.Extensions.Configuration.Registry/)
+[![NuGet version (TBC.Common.Configuration.Registry)](https://img.shields.io/nuget/v/TBC.Common.Configuration.Registry.svg)](https://www.nuget.org/packages/TBC.Common.Configuration.Registry/)
 
 Allows loading configuration data from Windows Registry key.
 
@@ -10,7 +10,7 @@ Allows loading configuration data from Windows Registry key.
 ### Install NuGet package
 
 ```powershell
-Install-Package TBC.Extensions.Configuration.Registry -IncludePrerelease
+Install-Package TBC.Common.Configuration.Registry
 ```
 
 ### Add Windows Registry configuration provider to builder pipeline
