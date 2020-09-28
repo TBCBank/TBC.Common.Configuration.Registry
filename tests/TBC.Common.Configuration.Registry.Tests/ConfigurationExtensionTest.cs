@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-namespace TBC.Extensions.Configuration.Registry.Tests
+namespace TBC.Common.Configuration.Registry.Tests
 {
     using System;
     using System.Linq;
@@ -30,7 +30,7 @@ namespace TBC.Extensions.Configuration.Registry.Tests
 
     public class ConfigurationExtensionTest : IDisposable
     {
-        private const string RootKey = @"SOFTWARE\TBC Bank\TBC.Extensions.Configuration.Registry";
+        private const string RootKey = @"SOFTWARE\TBC Bank\TBC.Common.Configuration.Registry";
         private RegistryKey _registryKey;
         private RegistryKey _defaultConnectionKey;
         private RegistryKey _inventory;
@@ -144,11 +144,6 @@ namespace TBC.Extensions.Configuration.Registry.Tests
             _inventory?.Dispose();
             _users?.Dispose();
             _registryKey?.Dispose();
-
-            _defaultConnectionKey = null;
-            _inventory = null;
-            _users = null;
-            _registryKey = null;
         }
     }
 }

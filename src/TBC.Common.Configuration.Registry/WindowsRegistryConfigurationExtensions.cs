@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.Configuration
     using System;
     using System.Runtime.InteropServices;
     using Microsoft.Win32;
-    using TBC.Extensions.Configuration.Registry;
+    using TBC.Common.Configuration.Registry;
 
     /// <summary>
     /// Extension methods for adding <see cref="WindowsRegistryConfigurationProvider"/>.

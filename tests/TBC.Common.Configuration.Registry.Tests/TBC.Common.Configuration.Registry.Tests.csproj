@@ -20,7 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\TBC.Extensions.Configuration.Registry\TBC.Extensions.Configuration.Registry.csproj" />
+        <ProjectReference Include="..\..\src\TBC.Common.Configuration.Registry\TBC.Common.Configuration.Registry.csproj" />
     </ItemGroup>
 
 </Project>

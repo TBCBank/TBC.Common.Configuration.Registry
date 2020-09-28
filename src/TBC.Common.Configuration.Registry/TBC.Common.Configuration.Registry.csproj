@@ -5,12 +5,12 @@
         <LangVersion>latest</LangVersion>
         <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>1.0.1</PackageVersion>
+        <PackageVersion>1.0.0</PackageVersion>
         <Authors>Giorgi Chakhidze</Authors>
         <Company>TBC Bank</Company>
         <Copyright>2019 TBC Bank</Copyright>
-        <PackageProjectUrl>https://github.com/TBCBank/TBC.Extensions.Configuration.Registry</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/TBCBank/TBC.Extensions.Configuration.Registry</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>aspnetcore,configuration</PackageTags>
         <Description>Adds Windows Registry support to ASP.NET Core configuration system.</Description>

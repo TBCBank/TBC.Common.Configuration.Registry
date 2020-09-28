@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-namespace TBC.Extensions.Configuration.Registry
+namespace TBC.Common.Configuration.Registry
 {
     using System;
     using Microsoft.Extensions.Configuration;
