@@ -46,7 +46,8 @@ namespace TBC.Common.Configuration.Registry
         /// </summary>
         public override void Load()
         {
-            using var regWalker = new WindowsRegistryTreeWalker(_options.RootKey, _options.RegistryHive, _options.Optional);
+            using var regWalker = new WindowsRegistryTreeWalker(_options.RootKey,
+                _options.RegistryHive, _options.Optional);
 
             this.Data = regWalker.ParseTree();
         }

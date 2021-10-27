@@ -33,7 +33,8 @@ namespace Microsoft.Extensions.Configuration
     public static class WindowsRegistryConfigurationExtensions
     {
         /// <summary>
-        /// Adds the Windows Registry configuration provider at <paramref name="rootKey"/> to <paramref name="builder"/>.
+        /// Adds the Windows Registry configuration provider at <paramref name="rootKey"/>
+        /// to <paramref name="builder"/>.
         /// </summary>
         /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
         /// <param name="rootKey">The root key path.</param>

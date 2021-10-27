@@ -24,10 +24,12 @@ namespace TBC.Common.Configuration.Registry.Tests
 {
     using System;
     using System.Linq;
+    using System.Runtime.Versioning;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Win32;
     using Xunit;
 
+    [SupportedOSPlatform("windows")]
     public class ConfigurationExtensionTest : IDisposable
     {
         private const string RootKey = @"SOFTWARE\TBC Bank\TBC.Common.Configuration.Registry";

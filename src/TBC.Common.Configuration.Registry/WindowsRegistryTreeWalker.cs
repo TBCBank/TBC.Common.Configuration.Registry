@@ -30,8 +30,8 @@ namespace TBC.Common.Configuration.Registry
 
     internal sealed class WindowsRegistryTreeWalker : IDisposable
     {
-        private readonly IDictionary<string, string> _data = new SortedDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        private readonly Stack<string> _context = new Stack<string>();
+        private readonly SortedDictionary<string, string> _data = new(StringComparer.OrdinalIgnoreCase);
+        private readonly Stack<string> _context = new();
         private string _currentPath;
         private RegistryKey _rootKey;
         private readonly bool _optional;
@@ -52,7 +52,7 @@ namespace TBC.Common.Configuration.Registry
                 _ => throw new ArgumentOutOfRangeException(nameof(registryHive)),
             };
 
-            if (_rootKey == null && !optional)
+            if (_rootKey is null && !optional)
             {
                 throw new InvalidOperationException($"Registry key '{rootKeyPath}' was not found.");
             }
@@ -72,7 +72,7 @@ namespace TBC.Common.Configuration.Registry
 
         public IDictionary<string, string> ParseTree()
         {
-            if (_optional && _rootKey == null)
+            if (_optional && _rootKey is null)
             {
                 return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
@@ -121,7 +121,7 @@ namespace TBC.Common.Configuration.Registry
             if (string.IsNullOrWhiteSpace(valueName))
             {
                 // Turns this: 'Key:SubKey:0:' into 'Key:SubKey:0', as this is what ASP.NET Core likes.
-                path = path.Substring(0, path.LastIndexOf(':'));
+                path = path.Substring(0, path.LastIndexOf(ConfigurationPath.KeyDelimiter));
             }
 
             _data[path] = value;
