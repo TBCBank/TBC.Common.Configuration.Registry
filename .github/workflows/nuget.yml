@@ -1,10 +1,9 @@
-
 name: NuGet
 
 on:
   push:
     tags:
-    - '*'
+      - '*'
 
 jobs:
   build:
