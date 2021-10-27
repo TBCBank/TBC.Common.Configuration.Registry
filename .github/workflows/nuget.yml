@@ -15,10 +15,11 @@ jobs:
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.402
+        dotnet-version: 5.0.x
+        include-prerelease: false
 
     - name: Restore
-      run: dotnet restore
+      run: dotnet restore /property:Configuration=Release
 
     - name: Build
       run: dotnet build --configuration Release --no-restore
@@ -27,4 +28,4 @@ jobs:
       run: dotnet test --no-restore --verbosity normal
 
     - name: Push
-      run: dotnet nuget push "src\TBC.Common.Configuration.Registry\bin\Release\*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json"
+      run: dotnet nuget push "src\TBC.Common.Configuration.Registry\bin\Release\*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
