@@ -10,7 +10,11 @@ jobs:
     runs-on: windows-latest
 
     steps:
+
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 10
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -24,7 +28,7 @@ jobs:
       run: dotnet build -c Release --no-restore
 
     - name: Test
-      run: dotnet test --no-build --no-restore --verbosity normal
+      run: dotnet test -c Release --no-build --no-restore --verbosity normal
 
     - name: Push
       run: dotnet nuget push "src\TBC.Common.Configuration.Registry\bin\Release\*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" -s "https://api.nuget.org/v3/index.json" --skip-duplicate
