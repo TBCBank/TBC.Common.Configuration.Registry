@@ -3,7 +3,7 @@ name: NuGet
 on:
   push:
     tags:
-      - '*'
+      - '**'
 
 jobs:
   build:
@@ -11,20 +11,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET Core
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
         include-prerelease: false
 
     - name: Restore
       run: dotnet restore /property:Configuration=Release
 
     - name: Build
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build -c Release --no-restore
 
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-build --no-restore --verbosity normal
 
     - name: Push
-      run: dotnet nuget push "src\TBC.Common.Configuration.Registry\bin\Release\*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json" --skip-duplicate
+      run: dotnet nuget push "src\TBC.Common.Configuration.Registry\bin\Release\*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" -s "https://api.nuget.org/v3/index.json" --skip-duplicate

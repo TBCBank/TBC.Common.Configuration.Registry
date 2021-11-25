@@ -28,6 +28,9 @@ namespace TBC.Common.Configuration.Registry
     /// <summary>
     /// Options for <see cref="WindowsRegistryConfigurationSource"/>.
     /// </summary>
+#if NET5_0_OR_GREATER
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
     public class WindowsRegistryConfigurationOptions
     {
         /// <summary>

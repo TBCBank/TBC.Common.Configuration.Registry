@@ -28,6 +28,9 @@ namespace TBC.Common.Configuration.Registry
     /// <summary>
     /// Represents a Windows Registry key as an <see cref="IConfigurationSource"/>.
     /// </summary>
+#if NET5_0_OR_GREATER
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
     public class WindowsRegistryConfigurationSource : IConfigurationSource
     {
         private readonly WindowsRegistryConfigurationOptions _options;

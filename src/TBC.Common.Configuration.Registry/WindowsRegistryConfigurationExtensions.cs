@@ -41,6 +41,9 @@ namespace Microsoft.Extensions.Configuration
         /// <param name="registryHive">Top-level Windows Registry hive.</param>
         /// <param name="optional">Whether or not the Registry key is optional.</param>
         /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+#if NET5_0_OR_GREATER
+        [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
         public static IConfigurationBuilder AddWindowsRegistry(
             this IConfigurationBuilder builder,
             string rootKey,

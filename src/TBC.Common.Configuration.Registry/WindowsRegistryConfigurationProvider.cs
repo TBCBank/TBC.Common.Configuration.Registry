@@ -28,6 +28,9 @@ namespace TBC.Common.Configuration.Registry
     /// <summary>
     /// A Windows Registry based <see cref="ConfigurationProvider"/>.
     /// </summary>
+#if NET5_0_OR_GREATER
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
     public class WindowsRegistryConfigurationProvider : ConfigurationProvider
     {
         private readonly WindowsRegistryConfigurationOptions _options;

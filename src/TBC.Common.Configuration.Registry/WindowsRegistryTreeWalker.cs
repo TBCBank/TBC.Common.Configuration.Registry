@@ -28,6 +28,9 @@ namespace TBC.Common.Configuration.Registry
     using Microsoft.Extensions.Configuration;
     using Microsoft.Win32;
 
+#if NET5_0_OR_GREATER
+    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
     internal sealed class WindowsRegistryTreeWalker : IDisposable
     {
         private readonly SortedDictionary<string, string> _data = new(StringComparer.OrdinalIgnoreCase);
@@ -121,7 +124,7 @@ namespace TBC.Common.Configuration.Registry
             if (string.IsNullOrWhiteSpace(valueName))
             {
                 // Turns this: 'Key:SubKey:0:' into 'Key:SubKey:0', as this is what ASP.NET Core likes.
-                path = path.Substring(0, path.LastIndexOf(ConfigurationPath.KeyDelimiter));
+                path = path.Substring(0, path.LastIndexOf(ConfigurationPath.KeyDelimiter, StringComparison.Ordinal));
             }
 
             _data[path] = value;
