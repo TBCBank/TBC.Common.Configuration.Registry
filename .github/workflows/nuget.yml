@@ -36,15 +36,14 @@ jobs:
       run: dotnet build -c Release --no-restore
 
     - name: Test
-      run: dotnet test -c Release --no-build --no-restore --verbosity normal -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura -p:CoverletOutput="./coverage/reports/" -p:SkipAutoProps=true
+      run: dotnet test -c Release --no-build --no-restore --verbosity normal -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura -p:CoverletOutput="$(GITHUB_WORKSPACE)/coverage/" -p:SkipAutoProps=true
 
     - uses: codecov/codecov-action@v2
       with:
-        directory: ./coverage/reports/
-        files: coverage.cobertura.xml
+        files: '$(GITHUB_WORKSPACE)/coverage/coverage.cobertura.xml'
         flags: unittests
         fail_ci_if_error: true
-        verbose: false
+        verbose: true
 
     - name: Push
       run: dotnet nuget push "src\TBC.Common.Configuration.Registry\bin\Release\*.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" -s "https://api.nuget.org/v3/index.json" --skip-duplicate
