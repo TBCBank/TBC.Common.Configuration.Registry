@@ -37,4 +37,11 @@ jobs:
       run: dotnet build -c Release --no-restore
 
     - name: Test
-      run: dotnet test -c Release --no-build --no-restore --verbosity normal
+      run: dotnet test -c Release --no-build --no-restore --verbosity normal -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura -p:CoverletOutput="./coverage/reports/" -p:SkipAutoProps=true
+
+    - uses: codecov/codecov-action@v2
+      with:
+        directory: ./coverage/reports/
+        flags: unittests
+        fail_ci_if_error: true
+        verbose: false
