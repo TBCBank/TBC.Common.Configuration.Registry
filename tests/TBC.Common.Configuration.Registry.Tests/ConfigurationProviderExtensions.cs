@@ -20,21 +20,20 @@
  * SOFTWARE.
  */
 
-namespace TBC.Common.Configuration.Registry.Tests
+namespace TBC.Common.Configuration.Registry.Tests;
+
+using System;
+using Microsoft.Extensions.Configuration;
+
+internal static class ConfigurationProviderExtensions
 {
-    using System;
-    using Microsoft.Extensions.Configuration;
-
-    internal static class ConfigurationProviderExtensions
+    public static string Get(this IConfigurationProvider provider, string key)
     {
-        public static string Get(this IConfigurationProvider provider, string key)
+        if (!provider.TryGet(key, out string value))
         {
-            if (!provider.TryGet(key, out string value))
-            {
-                throw new InvalidOperationException("Key not found");
-            }
-
-            return value;
+            throw new InvalidOperationException("Key not found");
         }
+
+        return value;
     }
 }

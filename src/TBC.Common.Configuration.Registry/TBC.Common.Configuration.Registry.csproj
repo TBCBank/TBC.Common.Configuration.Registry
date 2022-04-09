@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp2.0;netcoreapp2.1;netcoreapp3.0;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
         <LangVersion>latest</LangVersion>
         <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
-        <CLSCompliant>true</CLSCompliant>
         <IsPackable>true</IsPackable>
         <Authors>george.chakhidze</Authors>
         <Company>TBC Bank</Company>
@@ -18,28 +17,27 @@
         <PackageIcon>icon.png</PackageIcon>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <DebugType>embedded</DebugType>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <AnalysisLevel>latest-all</AnalysisLevel>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(MSBuildThisFileName).xml</DocumentationFile>
     </PropertyGroup>
 
-    <PropertyGroup Condition=" '$(TF_BUILD)' == 'true' or '$(GITHUB_ACTIONS)' == 'true' ">
+    <PropertyGroup Condition=" '$(TF_BUILD)' == 'True' or '$(GITHUB_ACTIONS)' == 'true' ">
         <Deterministic>true</Deterministic>
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
         <DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
         <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
         <EnableNETAnalyzers>false</EnableNETAnalyzers>
         <RunAnalyzers>false</RunAnalyzers>
-        <RestoreDisableParallel>true</RestoreDisableParallel>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Meziantou.Analyzer" Version="1.0.679">
+        <PackageReference Include="Meziantou.Analyzer" Version="1.0.698">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
@@ -47,58 +45,61 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="MinVer" Version="2.5.0">
+        <PackageReference Include="MinVer" Version="3.1.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' Or '$(TargetFramework)' == 'netcoreapp2.1' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
-        <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.3" />
-        <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' Or '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.20" />
-        <PackageReference Include="Microsoft.Win32.Registry" Version="4.7.0" />
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.*" />
+        <PackageReference Include="Microsoft.Win32.Registry" Version="4.*" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-        <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.*" />
+        <PackageReference Include="Microsoft.Win32.Registry" Version="5.*" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
+        <PackageReference Include="Microsoft.Win32.Registry" Version="5.*" />
+    </ItemGroup>
+
+    <ItemGroup Label="SourceLink">
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" Condition=" '$(Configuration)|$(GITHUB_ACTIONS)' == 'Release|true' ">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.SourceLink.AzureDevOpsServer.Git" Version="1.1.1" Condition=" '$(Configuration)|$(TF_BUILD)' == 'Release|True' ">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
         <SupportedPlatform Include="Windows" />
     </ItemGroup>
 
-    <ItemGroup>
-        <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition=" $(BuildNumber) != '' ">
-            <_Parameter1>BuildNumber</_Parameter1>
-            <_Parameter2>$(BuildNumber)</_Parameter2>
+    <ItemGroup Label="Assembly Metadata">
+        <AssemblyMetadata Include="BuildNumber" Value="$(BuildNumber)" Condition=" $(BuildNumber) != '' " />
+        <AssemblyMetadata Include="BuildId" Value="$(BuildId)" Condition=" $(BuildId) != '' " />
+        <AssemblyAttribute Include="System.CLSCompliant">
+            <_Parameter1>true</_Parameter1>
+            <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
         </AssemblyAttribute>
-        <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition=" $(BuildId) != '' ">
-            <_Parameter1>BuildId</_Parameter1>
-            <_Parameter2>$(BuildId)</_Parameter2>
-        </AssemblyAttribute>
+        <InternalsVisibleTo Include="$(AssemblyName).Tests" />
     </ItemGroup>
 
     <ItemGroup>
         <None Include="images\icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
+
+    <Target Name="TBC_CalculateAssemblyVersions" AfterTargets="MinVer">
+        <PropertyGroup>
+            <AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
+            <InformationalVersion Condition=" '$(GITHUB_ACTIONS)' == 'true' ">$(MinVerVersion)+$(GITHUB_SHA)</InformationalVersion>
+        </PropertyGroup>
+    </Target>
 
 </Project>

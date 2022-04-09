@@ -20,36 +20,35 @@
  * SOFTWARE.
  */
 
-namespace TBC.Common.Configuration.Registry
+namespace TBC.Common.Configuration.Registry;
+
+using System;
+using Microsoft.Extensions.Configuration;
+
+/// <summary>
+/// Represents a Windows Registry key as an <see cref="IConfigurationSource"/>.
+/// </summary>
+#if NET5_0_OR_GREATER
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
+public class WindowsRegistryConfigurationSource : IConfigurationSource
 {
-    using System;
-    using Microsoft.Extensions.Configuration;
+    private readonly WindowsRegistryConfigurationOptions _options;
 
     /// <summary>
-    /// Represents a Windows Registry key as an <see cref="IConfigurationSource"/>.
+    /// Initializes a new instance with the specified options.
     /// </summary>
-#if NET5_0_OR_GREATER
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
-    public class WindowsRegistryConfigurationSource : IConfigurationSource
+    /// <param name="options">The configuration options.</param>
+    public WindowsRegistryConfigurationSource(WindowsRegistryConfigurationOptions options)
     {
-        private readonly WindowsRegistryConfigurationOptions _options;
-
-        /// <summary>
-        /// Initializes a new instance with the specified options.
-        /// </summary>
-        /// <param name="options">The configuration options.</param>
-        public WindowsRegistryConfigurationSource(WindowsRegistryConfigurationOptions options)
-        {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
-        }
-
-        /// <summary>
-        /// Builds the <see cref="WindowsRegistryConfigurationProvider"/> for this source.
-        /// </summary>
-        /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
-        /// <returns>A <see cref="WindowsRegistryConfigurationProvider"/></returns>
-        public IConfigurationProvider Build(IConfigurationBuilder builder) =>
-            new WindowsRegistryConfigurationProvider(_options);
+        _options = options ?? throw new ArgumentNullException(nameof(options));
     }
+
+    /// <summary>
+    /// Builds the <see cref="WindowsRegistryConfigurationProvider"/> for this source.
+    /// </summary>
+    /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
+    /// <returns>A <see cref="WindowsRegistryConfigurationProvider"/></returns>
+    public IConfigurationProvider Build(IConfigurationBuilder builder) =>
+        new WindowsRegistryConfigurationProvider(_options);
 }

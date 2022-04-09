@@ -20,39 +20,38 @@
  * SOFTWARE.
  */
 
-namespace TBC.Common.Configuration.Registry
+namespace TBC.Common.Configuration.Registry;
+
+using System;
+using Microsoft.Extensions.Configuration;
+
+/// <summary>
+/// A Windows Registry based <see cref="ConfigurationProvider"/>.
+/// </summary>
+#if NET5_0_OR_GREATER
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
+public class WindowsRegistryConfigurationProvider : ConfigurationProvider
 {
-    using System;
-    using Microsoft.Extensions.Configuration;
+    private readonly WindowsRegistryConfigurationOptions _options;
 
     /// <summary>
-    /// A Windows Registry based <see cref="ConfigurationProvider"/>.
+    /// Initializes a new instance with the specified options.
     /// </summary>
-#if NET5_0_OR_GREATER
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
-    public class WindowsRegistryConfigurationProvider : ConfigurationProvider
+    /// <param name="options">The configuration options.</param>
+    public WindowsRegistryConfigurationProvider(WindowsRegistryConfigurationOptions options)
     {
-        private readonly WindowsRegistryConfigurationOptions _options;
+        _options = options ?? throw new ArgumentNullException(nameof(options));
+    }
 
-        /// <summary>
-        /// Initializes a new instance with the specified options.
-        /// </summary>
-        /// <param name="options">The configuration options.</param>
-        public WindowsRegistryConfigurationProvider(WindowsRegistryConfigurationOptions options)
-        {
-            _options = options ?? throw new ArgumentNullException(nameof(options));
-        }
+    /// <summary>
+    /// Loads configuration data from Windows Registry key.
+    /// </summary>
+    public override void Load()
+    {
+        using var regWalker = new WindowsRegistryTreeWalker(_options.RootKey,
+            _options.RegistryHive, _options.Optional);
 
-        /// <summary>
-        /// Loads configuration data from Windows Registry key.
-        /// </summary>
-        public override void Load()
-        {
-            using var regWalker = new WindowsRegistryTreeWalker(_options.RootKey,
-                _options.RegistryHive, _options.Optional);
-
-            this.Data = regWalker.ParseTree();
-        }
+        this.Data = regWalker.ParseTree();
     }
 }

@@ -20,49 +20,48 @@
  * SOFTWARE.
  */
 
-namespace TBC.Common.Configuration.Registry
+namespace TBC.Common.Configuration.Registry;
+
+using System;
+using Microsoft.Win32;
+
+/// <summary>
+/// Options for <see cref="WindowsRegistryConfigurationSource"/>.
+/// </summary>
+#if NET5_0_OR_GREATER
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#endif
+public class WindowsRegistryConfigurationOptions
 {
-    using System;
-    using Microsoft.Win32;
+    /// <summary>
+    /// The root key path.
+    /// </summary>
+    public string RootKey { get; set; }
 
     /// <summary>
-    /// Options for <see cref="WindowsRegistryConfigurationSource"/>.
+    /// The top-level Windows Registry node.
     /// </summary>
-#if NET5_0_OR_GREATER
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
-    public class WindowsRegistryConfigurationOptions
+    public RegistryHive RegistryHive { get; set; } = RegistryHive.LocalMachine;
+
+    /// <summary>
+    /// Determines if loading the configuration is optional.
+    /// </summary>
+    public bool Optional { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance with the specified options.
+    /// </summary>
+    /// <param name="rootKey">The root key path.</param>
+    /// <param name="registryHive">The top-level Windows Registry node.</param>
+    public WindowsRegistryConfigurationOptions(string rootKey, RegistryHive registryHive)
     {
-        /// <summary>
-        /// The root key path.
-        /// </summary>
-        public string RootKey { get; set; }
-
-        /// <summary>
-        /// The top-level Windows Registry node.
-        /// </summary>
-        public RegistryHive RegistryHive { get; set; } = RegistryHive.LocalMachine;
-
-        /// <summary>
-        /// Determines if loading the configuration is optional.
-        /// </summary>
-        public bool Optional { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance with the specified options.
-        /// </summary>
-        /// <param name="rootKey">The root key path.</param>
-        /// <param name="registryHive">The top-level Windows Registry node.</param>
-        public WindowsRegistryConfigurationOptions(string rootKey, RegistryHive registryHive)
+        if (string.IsNullOrWhiteSpace(rootKey))
         {
-            if (string.IsNullOrWhiteSpace(rootKey))
-            {
-                throw new ArgumentNullException(nameof(rootKey));
-            }
-
-            this.RootKey = rootKey;
-            this.RegistryHive = registryHive;
-            this.Optional = true;
+            throw new ArgumentNullException(nameof(rootKey));
         }
+
+        this.RootKey = rootKey;
+        this.RegistryHive = registryHive;
+        this.Optional = true;
     }
 }

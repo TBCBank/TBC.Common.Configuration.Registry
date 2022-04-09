@@ -20,120 +20,119 @@
  * SOFTWARE.
  */
 
-namespace TBC.Common.Configuration.Registry
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Win32;
+namespace TBC.Common.Configuration.Registry;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Win32;
 
 #if NET5_0_OR_GREATER
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+[System.Runtime.Versioning.SupportedOSPlatform("windows")]
 #endif
-    internal sealed class WindowsRegistryTreeWalker : IDisposable
+internal sealed class WindowsRegistryTreeWalker : IDisposable
+{
+    private readonly SortedDictionary<string, string> _data = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Stack<string> _context = new();
+    private string _currentPath;
+    private RegistryKey _rootKey;
+    private readonly bool _optional;
+
+    public WindowsRegistryTreeWalker(string rootKeyPath, RegistryHive registryHive = RegistryHive.LocalMachine, bool optional = true)
     {
-        private readonly SortedDictionary<string, string> _data = new(StringComparer.OrdinalIgnoreCase);
-        private readonly Stack<string> _context = new();
-        private string _currentPath;
-        private RegistryKey _rootKey;
-        private readonly bool _optional;
-
-        public WindowsRegistryTreeWalker(string rootKeyPath, RegistryHive registryHive = RegistryHive.LocalMachine, bool optional = true)
+        if (string.IsNullOrWhiteSpace(rootKeyPath))
         {
-            if (string.IsNullOrWhiteSpace(rootKeyPath))
-            {
-                throw new ArgumentNullException(nameof(rootKeyPath));
-            }
-
-            _optional = optional;
-
-            _rootKey = registryHive switch
-            {
-                RegistryHive.LocalMachine => Registry.LocalMachine.OpenSubKey(rootKeyPath),
-                RegistryHive.CurrentUser => Registry.CurrentUser.OpenSubKey(rootKeyPath),
-                _ => throw new ArgumentOutOfRangeException(nameof(registryHive)),
-            };
-
-            if (_rootKey is null && !optional)
-            {
-                throw new InvalidOperationException($"Registry key '{rootKeyPath}' was not found.");
-            }
+            throw new ArgumentNullException(nameof(rootKeyPath));
         }
 
-        private void EnterContext(string context)
+        _optional = optional;
+
+        _rootKey = registryHive switch
         {
-            _context.Push(context);
-            _currentPath = ConfigurationPath.Combine(_context.Reverse());
+            RegistryHive.LocalMachine => Registry.LocalMachine.OpenSubKey(rootKeyPath),
+            RegistryHive.CurrentUser => Registry.CurrentUser.OpenSubKey(rootKeyPath),
+            _ => throw new ArgumentOutOfRangeException(nameof(registryHive)),
+        };
+
+        if (_rootKey is null && !optional)
+        {
+            throw new InvalidOperationException($"Registry key '{rootKeyPath}' was not found.");
+        }
+    }
+
+    private void EnterContext(string context)
+    {
+        _context.Push(context);
+        _currentPath = ConfigurationPath.Combine(_context.Reverse());
+    }
+
+    private void ExitContext()
+    {
+        _context.Pop();
+        _currentPath = ConfigurationPath.Combine(_context.Reverse());
+    }
+
+    public IDictionary<string, string> ParseTree()
+    {
+        if (_optional && _rootKey is null)
+        {
+            return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         }
 
-        private void ExitContext()
+        _data.Clear();
+        VisitRegistryKey(_rootKey);
+        return _data;
+    }
+
+    private void VisitRegistryKey(RegistryKey key)
+    {
+        string[] valueNames = key.GetValueNames();
+
+        if (valueNames != null && valueNames.Any())
         {
-            _context.Pop();
-            _currentPath = ConfigurationPath.Combine(_context.Reverse());
-        }
-
-        public IDictionary<string, string> ParseTree()
-        {
-            if (_optional && _rootKey is null)
+            foreach (string valueName in valueNames)
             {
-                return new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            }
-
-            _data.Clear();
-            VisitRegistryKey(_rootKey);
-            return _data;
-        }
-
-        private void VisitRegistryKey(RegistryKey key)
-        {
-            string[] valueNames = key.GetValueNames();
-
-            if (valueNames != null && valueNames.Any())
-            {
-                foreach (string valueName in valueNames)
-                {
-                    EnterContext(valueName);
-                    VisitRegistryValue(key, valueName);
-                    ExitContext();
-                }
-            }
-
-            string[] keyNames = key.GetSubKeyNames();
-
-            if (keyNames != null && keyNames.Any())
-            {
-                foreach (string keyName in keyNames)
-                {
-                    using var subKey = key.OpenSubKey(keyName);
-
-                    EnterContext(keyName);
-                    VisitRegistryKey(subKey);
-                    ExitContext();
-                }
+                EnterContext(valueName);
+                VisitRegistryValue(key, valueName);
+                ExitContext();
             }
         }
 
-        private void VisitRegistryValue(RegistryKey parent, string valueName)
-        {
-            var path = _currentPath;
-            var value = parent.GetValue(valueName)?.ToString();
+        string[] keyNames = key.GetSubKeyNames();
 
-            // Special case: when writing (default) value, we dont want an empty string
-            // as value name appended to the key!
-            if (string.IsNullOrWhiteSpace(valueName))
+        if (keyNames != null && keyNames.Any())
+        {
+            foreach (string keyName in keyNames)
             {
-                // Turns this: 'Key:SubKey:0:' into 'Key:SubKey:0', as this is what ASP.NET Core likes.
-                path = path.Substring(0, path.LastIndexOf(ConfigurationPath.KeyDelimiter, StringComparison.Ordinal));
+                using var subKey = key.OpenSubKey(keyName);
+
+                EnterContext(keyName);
+                VisitRegistryKey(subKey);
+                ExitContext();
             }
-
-            _data[path] = value;
         }
+    }
 
-        public void Dispose()
+    private void VisitRegistryValue(RegistryKey parent, string valueName)
+    {
+        var path = _currentPath;
+        var value = parent.GetValue(valueName)?.ToString();
+
+        // Special case: when writing (default) value, we dont want an empty string
+        // as value name appended to the key!
+        if (string.IsNullOrWhiteSpace(valueName))
         {
-            _rootKey?.Dispose();
-            _rootKey = null;
+            // Turns this: 'Key:SubKey:0:' into 'Key:SubKey:0', as this is what ASP.NET Core likes.
+            path = path.Substring(0, path.LastIndexOf(ConfigurationPath.KeyDelimiter, StringComparison.Ordinal));
         }
+
+        _data[path] = value;
+    }
+
+    public void Dispose()
+    {
+        _rootKey?.Dispose();
+        _rootKey = null;
     }
 }

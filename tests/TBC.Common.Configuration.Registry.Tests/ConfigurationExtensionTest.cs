@@ -20,132 +20,133 @@
  * SOFTWARE.
  */
 
-namespace TBC.Common.Configuration.Registry.Tests
+namespace TBC.Common.Configuration.Registry.Tests;
+
+using System;
+using System.Linq;
+using System.Runtime.Versioning;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Win32;
+using Xunit;
+
+#if NET5_0_OR_GREATER
+[SupportedOSPlatform("windows")]
+#endif
+public class ConfigurationExtensionTest : IDisposable
 {
-    using System;
-    using System.Linq;
-    using System.Runtime.Versioning;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Win32;
-    using Xunit;
+    private const string RootKey = @"SOFTWARE\TBC Bank\TBC.Common.Configuration.Registry";
+    private RegistryKey _registryKey;
+    private RegistryKey _defaultConnectionKey;
+    private RegistryKey _inventory;
+    private RegistryKey _users;
 
-    [SupportedOSPlatform("windows")]
-    public class ConfigurationExtensionTest : IDisposable
+    public ConfigurationExtensionTest()
     {
-        private const string RootKey = @"SOFTWARE\TBC Bank\TBC.Common.Configuration.Registry";
-        private RegistryKey _registryKey;
-        private RegistryKey _defaultConnectionKey;
-        private RegistryKey _inventory;
-        private RegistryKey _users;
+        this.Setup();
+    }
 
-        public ConfigurationExtensionTest()
-        {
-            this.Setup();
-        }
+    [Fact(DisplayName = "WindowsRegistryConfigurationProvider Load")]
+    public void WindowsRegistryConfigurationProvider_LoadKeyValuePairsFromRegistryKey()
+    {
+        var options = new WindowsRegistryConfigurationOptions(RootKey, RegistryHive.CurrentUser);
+        var config = new WindowsRegistryConfigurationProvider(options);
 
-        [Fact(DisplayName = "WindowsRegistryConfigurationProvider Load")]
-        public void WindowsRegistryConfigurationProvider_LoadKeyValuePairsFromRegistryKey()
-        {
-            var options = new WindowsRegistryConfigurationOptions(RootKey, RegistryHive.CurrentUser);
-            var config = new WindowsRegistryConfigurationProvider(options);
+        config.Load();
 
-            config.Load();
+        Assert.Equal("TestConnectionString", config.Get("defaultconnection:ConnectionString"));
+        Assert.Equal("SqlClient", config.Get("DEFAULTCONNECTION:PROVIDER"));
+        Assert.Equal("AnotherTestConnectionString", config.Get("Inventory:CONNECTIONSTRING"));
+        Assert.Equal("MySql", config.Get("Inventory:Provider"));
+    }
 
-            Assert.Equal("TestConnectionString", config.Get("defaultconnection:ConnectionString"));
-            Assert.Equal("SqlClient", config.Get("DEFAULTCONNECTION:PROVIDER"));
-            Assert.Equal("AnotherTestConnectionString", config.Get("Inventory:CONNECTIONSTRING"));
-            Assert.Equal("MySql", config.Get("Inventory:Provider"));
-        }
+    [Fact(DisplayName = "AddWindowsRegistry Build")]
+    public void AddWindowsRegistry_BuildConfiguration()
+    {
+        var settings = new ConfigurationBuilder()
+            .AddWindowsRegistry(RootKey, RegistryHive.CurrentUser)
+            .Build()
+            .AsEnumerable()
+            .Where(i => i.Value != null)
+            .ToDictionary(i => i.Key, i => i.Value, StringComparer.OrdinalIgnoreCase);
 
-        [Fact(DisplayName = "AddWindowsRegistry Build")]
-        public void AddWindowsRegistry_BuildConfiguration()
-        {
-            var settings = new ConfigurationBuilder()
-                .AddWindowsRegistry(RootKey, RegistryHive.CurrentUser)
-                .Build()
-                .AsEnumerable()
-                .Where(i => i.Value != null)
-                .ToDictionary(i => i.Key, i => i.Value, StringComparer.OrdinalIgnoreCase);
+        Assert.NotNull(settings);
+        Assert.NotEmpty(settings);
+    }
 
-            Assert.NotNull(settings);
-            Assert.NotEmpty(settings);
-        }
+    [Fact(DisplayName = "AddWindowsRegistry Optional")]
+    public void AddWindowsRegistry_BuildOptionalConfiguration()
+    {
+        var settings = new ConfigurationBuilder()
+            .AddWindowsRegistry($"SOFTWARE\\DoesNotExist\\{Guid.NewGuid():N}", RegistryHive.CurrentUser, optional: true)
+            .Build();
 
-        [Fact(DisplayName = "AddWindowsRegistry Optional")]
-        public void AddWindowsRegistry_BuildOptionalConfiguration()
-        {
-            var settings = new ConfigurationBuilder()
-                .AddWindowsRegistry($"SOFTWARE\\DoesNotExist\\{Guid.NewGuid():N}", RegistryHive.CurrentUser, optional: true)
-                .Build();
+        Assert.NotNull(settings);
+    }
 
-            Assert.NotNull(settings);
-        }
+    [Fact(DisplayName = "WindowsRegistryConfigurationProvider Array")]
+    public void WindowsRegistryConfigurationProvider_ReadArray()
+    {
+        var settings = new ConfigurationBuilder()
+            .AddWindowsRegistry(RootKey, RegistryHive.CurrentUser)
+            .Build();
 
-        [Fact(DisplayName = "WindowsRegistryConfigurationProvider Array")]
-        public void WindowsRegistryConfigurationProvider_ReadArray()
-        {
-            var settings = new ConfigurationBuilder()
-                .AddWindowsRegistry(RootKey, RegistryHive.CurrentUser)
-                .Build();
+        var usersSection = settings.GetSection("Users");
 
-            var usersSection = settings.GetSection("Users");
+        var array = usersSection.AsEnumerable();
 
-            var array = usersSection.AsEnumerable();
+        Assert.NotNull(array);
+        Assert.NotEmpty(array);
 
-            Assert.NotNull(array);
-            Assert.NotEmpty(array);
+        var user1a = usersSection["0"];
+        var user1b = settings["Users:0"];
 
-            var user1a = usersSection["0"];
-            var user1b = settings["Users:0"];
+        Assert.NotNull(user1a);
+        Assert.NotNull(user1b);
+        Assert.Equal(user1a, user1b);
 
-            Assert.NotNull(user1a);
-            Assert.NotNull(user1b);
-            Assert.Equal(user1a, user1b);
+        var user2a = usersSection["1"];
+        var user2b = settings["Users:1"];
 
-            var user2a = usersSection["1"];
-            var user2b = settings["Users:1"];
+        Assert.NotNull(user2a);
+        Assert.NotNull(user2b);
+        Assert.Equal(user2a, user2b);
+    }
 
-            Assert.NotNull(user2a);
-            Assert.NotNull(user2b);
-            Assert.Equal(user2a, user2b);
-        }
+    private void Setup()
+    {
+        // Volatile keys will not be persisted after next Windows restart
 
-        private void Setup()
-        {
-            // Volatile keys will not be persisted after next Windows restart
+        _registryKey = Registry.CurrentUser.CreateSubKey(RootKey, true, RegistryOptions.Volatile);
 
-            _registryKey = Registry.CurrentUser.CreateSubKey(RootKey, true, RegistryOptions.Volatile);
+        _defaultConnectionKey = _registryKey.CreateSubKey("DefaultConnection", true, RegistryOptions.Volatile);
+        _inventory = _registryKey.CreateSubKey("Inventory", true, RegistryOptions.Volatile);
+        _users = _registryKey.CreateSubKey("Users", true, RegistryOptions.Volatile);
 
-            _defaultConnectionKey = _registryKey.CreateSubKey("DefaultConnection", true, RegistryOptions.Volatile);
-            _inventory = _registryKey.CreateSubKey("Inventory", true, RegistryOptions.Volatile);
-            _users = _registryKey.CreateSubKey("Users", true, RegistryOptions.Volatile);
+        _defaultConnectionKey.SetValue("ConnectionString", "TestConnectionString", RegistryValueKind.String);
+        _defaultConnectionKey.SetValue("Provider", "SqlClient", RegistryValueKind.String);
 
-            _defaultConnectionKey.SetValue("ConnectionString", "TestConnectionString", RegistryValueKind.String);
-            _defaultConnectionKey.SetValue("Provider", "SqlClient", RegistryValueKind.String);
+        _inventory.SetValue("ConnectionString", "AnotherTestConnectionString", RegistryValueKind.String);
+        _inventory.SetValue("Provider", "MySql", RegistryValueKind.String);
 
-            _inventory.SetValue("ConnectionString", "AnotherTestConnectionString", RegistryValueKind.String);
-            _inventory.SetValue("Provider", "MySql", RegistryValueKind.String);
+        //
+        // Array values
+        // https://stackoverflow.com/a/41330941/96009
+        //
+        using var user1 = _users.CreateSubKey("0", true, RegistryOptions.Volatile);
+        user1.SetValue(string.Empty, "User 1");
 
-            //
-            // Array values
-            // https://stackoverflow.com/a/41330941/96009
-            //
-            using var user1 = _users.CreateSubKey("0", true, RegistryOptions.Volatile);
-            user1.SetValue(string.Empty, "User 1");
+        using var user2 = _users.CreateSubKey("1", true, RegistryOptions.Volatile);
+        user2.SetValue(string.Empty, "User 2");
 
-            using var user2 = _users.CreateSubKey("1", true, RegistryOptions.Volatile);
-            user2.SetValue(string.Empty, "User 2");
+        using var user3 = _users.CreateSubKey("2", true, RegistryOptions.Volatile);
+        user3.SetValue(string.Empty, "User 3");
+    }
 
-            using var user3 = _users.CreateSubKey("2", true, RegistryOptions.Volatile);
-            user3.SetValue(string.Empty, "User 3");
-        }
-
-        public void Dispose()
-        {
-            _defaultConnectionKey?.Dispose();
-            _inventory?.Dispose();
-            _users?.Dispose();
-            _registryKey?.Dispose();
-        }
+    public void Dispose()
+    {
+        _defaultConnectionKey?.Dispose();
+        _inventory?.Dispose();
+        _users?.Dispose();
+        _registryKey?.Dispose();
     }
 }
