@@ -31,7 +31,7 @@ jobs:
         include-prerelease: false
 
     - name: Restore
-      run: dotnet restore /property:Configuration=Release
+      run: dotnet restore -p:Configuration=Release
 
     - name: Build
       run: dotnet build -c Release --no-restore
@@ -42,6 +42,7 @@ jobs:
     - uses: codecov/codecov-action@v2
       with:
         directory: ./coverage/reports/
+        files: ./coverage.cobertura.xml
         flags: unittests
         fail_ci_if_error: true
         verbose: false
