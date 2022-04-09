@@ -85,7 +85,7 @@
         <AssemblyMetadata Include="BuildNumber" Value="$(BuildNumber)" Condition=" $(BuildNumber) != '' " />
         <AssemblyMetadata Include="BuildId" Value="$(BuildId)" Condition=" $(BuildId) != '' " />
         <AssemblyAttribute Include="System.CLSCompliant">
-            <_Parameter1>true</_Parameter1>
+            <_Parameter1>false</_Parameter1>
             <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
         </AssemblyAttribute>
         <InternalsVisibleTo Include="$(AssemblyName).Tests" />
