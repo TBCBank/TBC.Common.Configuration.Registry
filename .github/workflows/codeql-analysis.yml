@@ -10,9 +10,15 @@ name: "CodeQL"
 on:
   push:
     branches: [master]
+    paths:
+      - '**.cs'
+      - '**.csproj'
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [master]
+    paths:
+      - '**.cs'
+      - '**.csproj'
   schedule:
     - cron: '0 16 * * 6'
 
