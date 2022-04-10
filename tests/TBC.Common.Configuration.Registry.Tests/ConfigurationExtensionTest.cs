@@ -24,14 +24,10 @@ namespace TBC.Common.Configuration.Registry.Tests;
 
 using System;
 using System.Linq;
-using System.Runtime.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 using Xunit;
 
-#if NET5_0_OR_GREATER
-[SupportedOSPlatform("windows")]
-#endif
 public class ConfigurationExtensionTest : IDisposable
 {
     private const string RootKey = @"SOFTWARE\TBC Bank\TBC.Common.Configuration.Registry";
@@ -112,6 +108,32 @@ public class ConfigurationExtensionTest : IDisposable
         Assert.Equal(user2a, user2b);
     }
 
+    [Theory(DisplayName = "WindowsRegistryTreeWalker Unsupported Hive")]
+    [InlineData(RegistryHive.ClassesRoot)]
+    [InlineData(RegistryHive.CurrentConfig)]
+    [InlineData(RegistryHive.PerformanceData)]
+    [InlineData(RegistryHive.Users)]
+    public void WindowsRegistryTreeWalker_UnsupportedHive(RegistryHive hive)
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new WindowsRegistryTreeWalker(RootKey, hive, optional: false);
+        });
+    }
+
+    [Theory]
+    [InlineData("SOFTWARE\\DoesNotExist1\\6475D6101A5443E5AEB62A971D98C394", RegistryHive.LocalMachine)]
+    [InlineData("SOFTWARE\\DoesNotExist2\\57E4A5F3F1E34F679A0D4016595DF227", RegistryHive.LocalMachine)]
+    [InlineData("SOFTWARE\\DoesNotExist3\\84852EF9580F4983A0DF4760800F568F", RegistryHive.CurrentUser)]
+    [InlineData("SOFTWARE\\DoesNotExist4\\43D648A261694197BE049D25E9B3A789", RegistryHive.CurrentUser)]
+    public void WindowsRegistryTreeWalker_RootKeyNotFound(string rootKey, RegistryHive hive)
+    {
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            _ = new WindowsRegistryTreeWalker(rootKey, hive, optional: false);
+        });
+    }
+
     private void Setup()
     {
         // Volatile keys will not be persisted after next Windows restart
@@ -148,5 +170,7 @@ public class ConfigurationExtensionTest : IDisposable
         _inventory?.Dispose();
         _users?.Dispose();
         _registryKey?.Dispose();
+
+        GC.SuppressFinalize(this);
     }
 }
