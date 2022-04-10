@@ -1,5 +1,5 @@
 
-# Windows Registry based ASP.NET Core Configuration Provider
+# Windows Registry based .NET Core Configuration Provider
 
 [![NuGet version (TBC.Common.Configuration.Registry)](https://img.shields.io/nuget/v/TBC.Common.Configuration.Registry.svg)](https://www.nuget.org/packages/TBC.Common.Configuration.Registry/)
 [![codecov](https://codecov.io/gh/TBCBank/TBC.Common.Configuration.Registry/branch/master/graph/badge.svg?token=RXFYIVGD3C)](https://codecov.io/gh/TBCBank/TBC.Common.Configuration.Registry)
@@ -48,6 +48,8 @@ Windows Registry Editor Version 5.00
 [HKEY_LOCAL_MACHINE\Software\MyCompany\MyApp]
 
 [HKEY_LOCAL_MACHINE\Software\MyCompany\MyApp\MyConfig]
+
+; Numbers in .REG files can only be hexadecimal
 
 [HKEY_LOCAL_MACHINE\Software\MyCompany\MyApp\MyConfig\DefaultConnection]
 "ConnectionString"="Server=example.com; Integrated Security=True; Database=MyDB"
