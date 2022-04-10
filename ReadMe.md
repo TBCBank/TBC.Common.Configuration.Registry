@@ -2,7 +2,9 @@
 # Windows Registry based .NET Core Configuration Provider
 
 [![NuGet version (TBC.Common.Configuration.Registry)](https://img.shields.io/nuget/v/TBC.Common.Configuration.Registry.svg)](https://www.nuget.org/packages/TBC.Common.Configuration.Registry/)
-[![codecov](https://codecov.io/gh/TBCBank/TBC.Common.Configuration.Registry/branch/master/graph/badge.svg?token=RXFYIVGD3C)](https://codecov.io/gh/TBCBank/TBC.Common.Configuration.Registry)
+[![Codecov](https://codecov.io/gh/TBCBank/TBC.Common.Configuration.Registry/branch/master/graph/badge.svg?token=RXFYIVGD3C)](https://codecov.io/gh/TBCBank/TBC.Common.Configuration.Registry)
+[![CI](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/main.yml/badge.svg)](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/main.yml)
+[![CodeQL](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/codeql-analysis.yml)
 
 Allows loading configuration data from Windows Registry key.
 
