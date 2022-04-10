@@ -98,7 +98,7 @@
     <Target Name="TBC_CalculateAssemblyVersions" AfterTargets="MinVer">
         <PropertyGroup>
             <AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
-            <InformationalVersion Condition=" '$(GITHUB_ACTIONS)' == 'true' ">$(MinVerVersion)+$(GITHUB_SHA)</InformationalVersion>
+            <InformationalVersion Condition=" '$(GITHUB_ACTIONS)' == 'true' ">$(MinVerVersion)</InformationalVersion>
         </PropertyGroup>
     </Target>
 

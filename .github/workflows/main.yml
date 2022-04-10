@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: pwsh
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_DISABLE_GUI_ERRORS: 1
@@ -34,10 +37,12 @@ jobs:
       run: dotnet restore -p:Configuration=Release
 
     - name: Build
-      run: dotnet build -c Release --no-restore
+      run: |
+        $revisionId = $(git rev-parse --short ${{ env.GITHUB_SHA }})
+        dotnet build -c Release --no-restore "-p:SourceRevisionId=$revisionId"
 
     - name: Test
-      run: dotnet test -c Release --no-build --no-restore --verbosity normal -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura -p:CoverletOutput="$env:GITHUB_WORKSPACE/coverage/" -p:SkipAutoProps=true
+      run: dotnet test -c Release --no-build --no-restore --verbosity normal -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura -p:CoverletOutput="${{ env.GITHUB_WORKSPACE }}/coverage/" -p:SkipAutoProps=true
 
     - uses: codecov/codecov-action@v2
       with:
