@@ -44,7 +44,7 @@ jobs:
     - name: Test
       run: dotnet test -c Release --no-build --no-restore --verbosity normal -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura -p:CoverletOutput="$env:GITHUB_WORKSPACE/coverage/" -p:SkipAutoProps=true
 
-    - uses: codecov/codecov-action@v2
+    - uses: codecov/codecov-action@v3
       with:
         files: './coverage/coverage.cobertura.xml'
         flags: unittests
