@@ -89,7 +89,7 @@ internal sealed class WindowsRegistryTreeWalker : IDisposable
     {
         string[] valueNames = key.GetValueNames();
 
-        if (valueNames != null && valueNames.Any())
+        if (valueNames != null && valueNames.Length > 0)
         {
             foreach (string valueName in valueNames)
             {
@@ -101,7 +101,7 @@ internal sealed class WindowsRegistryTreeWalker : IDisposable
 
         string[] keyNames = key.GetSubKeyNames();
 
-        if (keyNames != null && keyNames.Any())
+        if (keyNames != null && keyNames.Length > 0)
         {
             foreach (string keyName in keyNames)
             {
@@ -119,6 +119,8 @@ internal sealed class WindowsRegistryTreeWalker : IDisposable
         var path = _currentPath;
         var value = parent.GetValue(valueName)?.ToString();
 
+#pragma warning disable IDE0057  // Substring can be simplified (.netstandard target does not contain Range operator support)
+
         // Special case: when writing (default) value, we dont want an empty string
         // as value name appended to the key!
         if (string.IsNullOrWhiteSpace(valueName))
@@ -126,6 +128,8 @@ internal sealed class WindowsRegistryTreeWalker : IDisposable
             // Turns this: 'Key:SubKey:0:' into 'Key:SubKey:0', as this is what ASP.NET Core likes.
             path = path.Substring(0, path.LastIndexOf(ConfigurationPath.KeyDelimiter, StringComparison.Ordinal));
         }
+
+#pragma warning restore IDE0057
 
         _data[path] = value;
     }
