@@ -67,6 +67,9 @@ public static class WindowsRegistryConfigurationExtensions
         return builder;
     }
 
+#if NET5_0_OR_GREATER
+    [System.Runtime.Versioning.SupportedOSPlatformGuard("windows")]
+#endif
     private static bool IsWindows =>
 #if NET5_0_OR_GREATER
         OperatingSystem.IsWindows();
