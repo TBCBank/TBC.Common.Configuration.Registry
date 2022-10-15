@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0</TargetFrameworks>
         <LangVersion>latest</LangVersion>
         <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
         <IsPackable>true</IsPackable>
@@ -11,7 +11,7 @@
         <PackageProjectUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</PackageProjectUrl>
         <RepositoryUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageTags>aspnetcore,configuration</PackageTags>
+        <PackageTags>configuration;win32;registry</PackageTags>
         <Description>Adds Windows Registry support to ASP.NET Core configuration system.</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>icon.png</PackageIcon>
