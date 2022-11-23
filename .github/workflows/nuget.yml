@@ -40,7 +40,7 @@ jobs:
         dotnet build -c Release --no-restore "-p:SourceRevisionId=$revisionId"
 
     - name: Test
-      run: dotnet test -c Release --no-build --no-restore --verbosity normal -p:CollectCoverage=true -p:CoverletOutputFormat=cobertura -p:CoverletOutput="$env:GITHUB_WORKSPACE/coverage/" -p:SkipAutoProps=true
+      run: dotnet test -c Release --no-build --no-restore --verbosity normal '--collect:"XPlat Code Coverage"' --results-directory "$env:GITHUB_WORKSPACE/coverage/" --% -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.SkipAutoProps=true
 
     - uses: codecov/codecov-action@v3
       with:
