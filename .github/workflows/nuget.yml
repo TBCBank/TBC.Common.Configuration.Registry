@@ -40,11 +40,13 @@ jobs:
         dotnet build -c Release --no-restore "-p:SourceRevisionId=$revisionId"
 
     - name: Test
-      run: dotnet test -c Release --no-build --no-restore --verbosity normal '--collect:"XPlat Code Coverage"' --results-directory "$env:GITHUB_WORKSPACE/coverage/" --% -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.SkipAutoProps=true
+      run: |
+        dotnet test -c Release --no-build --no-restore --verbosity normal '--collect:"XPlat Code Coverage"' --results-directory "$env:GITHUB_WORKSPACE/coverage/" --% -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.SkipAutoProps=true
+        echo "CODE_COVERAGE_PATH=$($(dir "$env:GITHUB_WORKSPACE/coverage/" -Filter 'coverage.cobertura.xml' -Recurse | select -first 1).FullName)" >> $GITHUB_ENV
 
     - uses: codecov/codecov-action@v3
       with:
-        files: '${{ env.GITHUB_WORKSPACE }}/coverage/coverage.cobertura.xml'
+        files: ${{ env.CODE_COVERAGE_PATH }}
         flags: unittests
         fail_ci_if_error: true
         verbose: true
