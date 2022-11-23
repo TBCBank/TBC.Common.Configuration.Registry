@@ -7,7 +7,7 @@
 [![CodeQL](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/codeql-analysis.yml)
 [![Downloads](https://img.shields.io/nuget/dt/TBC.Common.Configuration.Registry)](https://www.nuget.org/packages/TBC.Common.Configuration.Registry/)
 
-Allows loading configuration data from Windows Registry key.
+Allows loading configuration data from a Windows Registry key.
 
 ## Usage
 
