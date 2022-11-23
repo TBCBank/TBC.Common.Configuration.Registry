@@ -44,7 +44,7 @@ jobs:
 
     - uses: codecov/codecov-action@v3
       with:
-        files: './coverage/coverage.cobertura.xml'
+        files: '${{ env.GITHUB_WORKSPACE }}/coverage/coverage.cobertura.xml'
         flags: unittests
         fail_ci_if_error: true
         verbose: true
