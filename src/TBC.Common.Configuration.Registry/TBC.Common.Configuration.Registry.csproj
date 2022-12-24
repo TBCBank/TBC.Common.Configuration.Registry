@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;net6.0;net7.0</TargetFrameworks>
         <LangVersion>latest</LangVersion>
         <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
         <IsPackable>true</IsPackable>
@@ -21,6 +21,7 @@
         <FileAlignment>4096</FileAlignment>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <AnalysisLevel>latest-all</AnalysisLevel>
+        <Features>strict</Features>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -46,26 +47,19 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' or '$(TargetFramework)' == 'netstandard2.0' or '$(TargetFramework)' == 'netstandard2.1' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.1.*" />
-        <PackageReference Include="Microsoft.Win32.Registry" Version="4.*" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net5.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.*" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.*" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
-        <PackageReference Include="Microsoft.Win32.Registry" Version="5.*" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.*" />
-        <PackageReference Include="Microsoft.Win32.Registry" Version="5.*" />
     </ItemGroup>
 
     <ItemGroup Label="SourceLink">
