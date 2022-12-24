@@ -12,7 +12,7 @@
         <RepositoryUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>configuration;win32;registry</PackageTags>
-        <Description>Adds Windows Registry support to ASP.NET Core configuration system.</Description>
+        <Description>Adds Windows Registry support to .NET configuration system</Description>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageIcon>icon.png</PackageIcon>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
