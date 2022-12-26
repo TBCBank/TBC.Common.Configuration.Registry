@@ -21,10 +21,14 @@ Install-Package TBC.Common.Configuration.Registry
 dotnet add package TBC.Common.Configuration.Registry
 ```
 
+```xml
+<PackageReference Include="TBC.Common.Configuration.Registry" Version="1.4.0" />
+```
+
 ### Example: Add Windows Registry provider to builder pipeline
 
 ```csharp
-public class Program
+public static class Program
 {
     // ...
 
@@ -36,9 +40,25 @@ public class Program
             })
             .ConfigureAppConfiguration((builderContext, config) =>
             {
-                config.AddWindowsRegistry("SOFTWARE\\MyCompany\\MyApp");
+                if (OperatingSystem.IsWindows())
+                {
+                    config.AddWindowsRegistry(@"SOFTWARE\MyCompany\MyApp");
+                }
             });
 }
+```
+
+### Example: Add Windows Registry provider to builder pipeline (Minimal API)
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+if (OperatingSystem.IsWindows())
+{
+    builder.Configuration.AddWindowsRegistry(@"SOFTWARE\MyCompany\MyApp");
+}
+
+// ...
 ```
 
 ### Example: A .REG file to import into Windows Registry
