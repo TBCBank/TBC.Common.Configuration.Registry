@@ -128,8 +128,7 @@ public record WebServiceConfig
 Register options in `Startup.ConfigureServices()` method:
 
 ```csharp
-services.AddOptions<MyConfigOptions>()
-        .BindConfiguration("MyConfig");
+services.AddOptions<MyConfigOptions>().BindConfiguration("MyConfig");
 ```
 
 Now you can inject `IOptions<MyConfigOptions>` into transient services and `IOptionsMonitor<MyConfigOptions>` into singleton ones.
