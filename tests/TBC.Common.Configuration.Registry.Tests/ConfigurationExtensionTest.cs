@@ -28,7 +28,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 using Xunit;
 
-public class ConfigurationExtensionTest : IDisposable
+public sealed class ConfigurationExtensionTest : IDisposable
 {
     private const string RootKey = @"SOFTWARE\TBC Bank\TBC.Common.Configuration.Registry";
     private RegistryKey _registryKey;
@@ -170,7 +170,5 @@ public class ConfigurationExtensionTest : IDisposable
         _inventory?.Dispose();
         _users?.Dispose();
         _registryKey?.Dispose();
-
-        GC.SuppressFinalize(this);
     }
 }
