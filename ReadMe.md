@@ -22,7 +22,7 @@ dotnet add package TBC.Common.Configuration.Registry
 ```
 
 ```xml
-<PackageReference Include="TBC.Common.Configuration.Registry" Version="1.4.0" />
+<PackageReference Include="TBC.Common.Configuration.Registry" Version="1.5.0" />
 ```
 
 ### Example: Add Windows Registry provider to builder pipeline
