@@ -119,13 +119,12 @@ internal sealed class WindowsRegistryTreeWalker : IDisposable
         var path = _currentPath;
         var value = parent.GetValue(valueName)?.ToString();
 
-#pragma warning disable IDE0057  // Substring can be simplified (.netstandard target does not contain Range operator support)
+#pragma warning disable IDE0057  // Substring can be simplified (.NET Standard does not provide Range operator support)
 
-        // Special case: when writing (default) value, we dont want an empty string
-        // as value name appended to the key!
+        // Special case: when writing (default) value, we dont want an empty string as a value name appended to the key
         if (string.IsNullOrWhiteSpace(valueName))
         {
-            // Turns this: 'Key:SubKey:0:' into 'Key:SubKey:0', as this is what ASP.NET Core likes.
+            // Turns this: 'Key:SubKey:0:' into 'Key:SubKey:0', as this is what .NET likes
             path = path.Substring(0, path.LastIndexOf(ConfigurationPath.KeyDelimiter, StringComparison.Ordinal));
         }
 
