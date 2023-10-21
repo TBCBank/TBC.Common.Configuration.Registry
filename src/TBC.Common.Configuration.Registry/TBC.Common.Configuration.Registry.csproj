@@ -22,6 +22,7 @@
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
         <AnalysisLevel>latest-all</AnalysisLevel>
         <Features>strict</Features>
+        <WarningLevel>9999</WarningLevel>
         <Deterministic>false</Deterministic>
     </PropertyGroup>
 
