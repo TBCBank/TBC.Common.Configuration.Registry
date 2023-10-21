@@ -26,7 +26,6 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
-using Xunit;
 
 public sealed class ConfigurationExtensionTest : IDisposable
 {
