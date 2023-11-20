@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net7.0;net6.0;net471;netstandard2.0</TargetFrameworks>
@@ -52,20 +52,20 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.*" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.*" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net471' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.*" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.*" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net7.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.*" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.*" />
     </ItemGroup>
 
     <ItemGroup Label="SourceLink">
