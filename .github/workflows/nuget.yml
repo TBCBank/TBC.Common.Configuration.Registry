@@ -39,7 +39,6 @@ jobs:
         $keyFile = "$env:GITHUB_WORKSPACE\keypair.snk"
         $snk = [Convert]::FromBase64String('${{ secrets.STRONG_NAME_KEY }}')
         [IO.File]::WriteAllBytes($keyFile, $snk)
-        echo "Strong name key written to $keyFile"
 
     - name: Build
       run: |
