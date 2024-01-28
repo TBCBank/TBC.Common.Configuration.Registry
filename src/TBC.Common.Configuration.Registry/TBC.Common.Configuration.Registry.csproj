@@ -92,6 +92,13 @@
             <_Parameter1>false</_Parameter1>
             <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
         </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(SignAssembly)' == 'True' ">
+        <InternalsVisibleTo Include="$(AssemblyName).Tests" Key="002400000480000094000000060200000024000052534131000400000100010063d172b113c8e7f634526e73d2d494a19074863d0a0689c333914a22d76e8757a87808d2a10978890ddb4a7a2a77c50a531df07a6ed54773b6e8de02edd25d75b48bc08dd010b3ff5605e9af637b9c194f43bac725b111dcb63e677cff3611646e0ec717db2448ddaae02a061f3d2b18b8ef7240ce2a1a4f8f8b450f0ee5efc6" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(SignAssembly)' == 'False' OR '$(SignAssembly)' == '' ">
         <InternalsVisibleTo Include="$(AssemblyName).Tests" />
     </ItemGroup>
 
