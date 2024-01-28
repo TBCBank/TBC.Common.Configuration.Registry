@@ -24,6 +24,8 @@
         <Features>strict</Features>
         <WarningLevel>9999</WarningLevel>
         <Deterministic>false</Deterministic>
+        <!-- AssemblyVersion is pinned because it is a part of the strong name. See Versioning.cs file -->
+        <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">

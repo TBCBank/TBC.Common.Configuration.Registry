@@ -34,8 +34,17 @@ jobs:
     - name: Restore
       run: dotnet restore -p:Configuration=Release
 
+    - name: Strong Name Key Pair
+      run: |
+        $keyFile = "$env:GITHUB_WORKSPACE\keypair.snk"
+        $snk = [Convert]::FromBase64String('${{ secrets.STRONG_NAME_KEY }}')
+        [IO.File]::WriteAllBytes($keyFile, $snk)
+        echo "Strong name key written to $keyFile"
+
     - name: Build
-      run: dotnet build -c Release --no-restore "-p:SourceRevisionId=$(git rev-parse --short $env:GITHUB_SHA)"
+      run: |
+        dotnet build -c Release --no-restore "-p:SourceRevisionId=$(git rev-parse --short $env:GITHUB_SHA)" -p:SignAssembly=True -p:DelaySign=False "-p:AssemblyOriginatorKeyFile=$env:GITHUB_WORKSPACE\keypair.snk"
+        del "$env:GITHUB_WORKSPACE\keypair.snk" -Force -Verbose
 
     - name: Test
       run: |
