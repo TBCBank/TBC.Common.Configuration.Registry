@@ -42,8 +42,9 @@ jobs:
 
     - name: Build
       run: |
-        dotnet build -c Release --no-restore "-p:SourceRevisionId=$(git rev-parse --short $env:GITHUB_SHA)" -p:SignAssembly=True -p:DelaySign=False "-p:AssemblyOriginatorKeyFile=$env:GITHUB_WORKSPACE\keypair.snk"
+        dotnet build $(dir TBC.Common.Configuration.Registry.csproj -Recurse | select -f 1 -expand FullName) -c Release --no-restore "-p:SourceRevisionId=$(git rev-parse --short $env:GITHUB_SHA)" -p:SignAssembly=True -p:DelaySign=False "-p:AssemblyOriginatorKeyFile=$env:GITHUB_WORKSPACE\keypair.snk"
         del "$env:GITHUB_WORKSPACE\keypair.snk" -Force -Verbose
+        dotnet build $(dir TBC.Common.Configuration.Registry.Tests.csproj -Recurse | select -f 1 -expand FullName) -c Release --no-restore -p:SignAssembly=False
 
     - name: Test
       run: |
