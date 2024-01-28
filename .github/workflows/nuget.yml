@@ -40,10 +40,7 @@ jobs:
         [IO.File]::WriteAllBytes("$env:GITHUB_WORKSPACE\keypair.snk", $snk)
 
     - name: Build
-      run: |
-        dotnet build "$(dir TBC.Common.Configuration.Registry.csproj -Recurse | select -first 1 -expand FullName)" -c Release --no-restore "-p:SourceRevisionId=$(git rev-parse --short $env:GITHUB_SHA)" -p:SignAssembly=True -p:DelaySign=False "-p:AssemblyOriginatorKeyFile=$env:GITHUB_WORKSPACE\keypair.snk"
-        dotnet build "$(dir TBC.Common.Configuration.Registry.Tests.csproj -Recurse | select -first 1 -expand FullName)" -c Release --no-restore -p:SignAssembly=True -p:DelaySign=False "-p:AssemblyOriginatorKeyFile=$env:GITHUB_WORKSPACE\keypair.snk"
-        del "$env:GITHUB_WORKSPACE\keypair.snk" -Force -Verbose
+      run: dotnet build -c Release --no-restore
 
     - name: Test
       run: |
@@ -56,6 +53,15 @@ jobs:
         flags: unittests
         fail_ci_if_error: true
         verbose: true
+
+    - name: Clean
+      run: dotnet clean
+
+    - name: Pack
+      run: |
+        $snk = "$env:GITHUB_WORKSPACE\keypair.snk"
+        dotnet pack "$(dir TBC.Common.Configuration.Registry.csproj -Recurse | select -first 1 -expand FullName)" -c Release "-p:SourceRevisionId=$(git rev-parse --short $env:GITHUB_SHA)" -p:SignAssembly=True -p:DelaySign=False "-p:AssemblyOriginatorKeyFile=$snk"
+        del $snk -Force -Verbose
 
     - name: Push
       run: dotnet nuget push "**\*.nupkg" -k "${{ secrets.NUGET_API_KEY }}" -s "https://api.nuget.org/v3/index.json" -n --skip-duplicate --force-english-output
