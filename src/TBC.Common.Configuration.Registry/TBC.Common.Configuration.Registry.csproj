@@ -1,117 +1,114 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFrameworks>net8.0;net6.0;net471;netstandard2.0</TargetFrameworks>
-        <LangVersion>latest</LangVersion>
-        <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
-        <IsPackable>true</IsPackable>
-        <Authors>george.chakhidze</Authors>
-        <Company>TBC Bank</Company>
-        <Copyright>© TBC Bank. All rights reserved.</Copyright>
-        <PackageProjectUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageTags>configuration;win32;registry</PackageTags>
-        <Description>Adds Windows Registry support to .NET configuration system</Description>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIcon>icon.png</PackageIcon>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
-        <DebugType>embedded</DebugType>
-        <FileAlignment>4096</FileAlignment>
-        <EnableNETAnalyzers>true</EnableNETAnalyzers>
-        <AnalysisLevel>latest-all</AnalysisLevel>
-        <Features>strict</Features>
-        <WarningLevel>9999</WarningLevel>
-        <Deterministic>false</Deterministic>
-        <!-- AssemblyVersion is pinned because it is a part of the strong name. See Versioning.cs file -->
-        <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-    </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>net9.0;net8.0;net6.0;net471;netstandard2.0</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+		<IsPackable>true</IsPackable>
+		<Authors>george.chakhidze</Authors>
+		<Company>TBC Bank</Company>
+		<Copyright>© TBC Bank. All rights reserved.</Copyright>
+		<PackageProjectUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>configuration;win32;registry</PackageTags>
+		<Description>Adds Windows Registry support to .NET configuration system</Description>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>icon.png</PackageIcon>
+		<PublishRepositoryUrl>true</PublishRepositoryUrl>
+		<EmbedUntrackedSources>true</EmbedUntrackedSources>
+		<DebugType>embedded</DebugType>
+		<EnableNETAnalyzers>true</EnableNETAnalyzers>
+		<AnalysisLevel>latest-all</AnalysisLevel>
+		<Features>strict</Features>
+		<WarningLevel>9999</WarningLevel>
+		<Deterministic>false</Deterministic>
+		<!-- AssemblyVersion is pinned because it is a part of the strong name. See Versioning.cs file -->
+		<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+		<NoWarn>$(NoWarn);S125</NoWarn>
+	</PropertyGroup>
 
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
 
-    <PropertyGroup Condition=" '$(TF_BUILD)' == 'True' or '$(GITHUB_ACTIONS)' == 'true' ">
-        <Deterministic>true</Deterministic>
-        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-        <DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
-        <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
-        <EnableNETAnalyzers>false</EnableNETAnalyzers>
-        <RunAnalyzers>false</RunAnalyzers>
-    </PropertyGroup>
+	<PropertyGroup Condition=" '$(TF_BUILD)' == 'True' or '$(GITHUB_ACTIONS)' == 'true' ">
+		<Deterministic>true</Deterministic>
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+		<DisableImplicitAspNetCoreAnalyzers>true</DisableImplicitAspNetCoreAnalyzers>
+		<DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
+		<EnableNETAnalyzers>false</EnableNETAnalyzers>
+		<RunAnalyzers>false</RunAnalyzers>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Meziantou.Analyzer" Version="2.0.*">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="MinVer" Version="4.3.*">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Meziantou.Analyzer" Version="2.*">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="MinVer" Version="6.*">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.*">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
-        <PackageReference Include="Microsoft.Win32.Registry" Version="5.*" />
-    </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
+		<PackageReference Include="Microsoft.Win32.Registry" Version="5.*" />
+	</ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net471' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
-    </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net471' ">
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
+	</ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
-    </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
+	</ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.*" />
-    </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.*" />
+	</ItemGroup>
 
-    <ItemGroup Label="SourceLink">
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.*" Condition=" '$(Configuration)|$(GITHUB_ACTIONS)' == 'Release|true' ">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.SourceLink.AzureDevOpsServer.Git" Version="8.0.*" Condition=" '$(Configuration)|$(TF_BUILD)' == 'Release|True' ">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-    </ItemGroup>
+	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.*" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <SupportedPlatform Include="Windows" />
-    </ItemGroup>
+	<ItemGroup>
+		<SupportedPlatform Include="Windows" />
+	</ItemGroup>
 
-    <ItemGroup Label="Assembly Metadata">
-        <AssemblyMetadata Include="BuildNumber" Value="$(BuildNumber)" Condition=" $(BuildNumber) != '' " />
-        <AssemblyMetadata Include="BuildId" Value="$(BuildId)" Condition=" $(BuildId) != '' " />
-        <AssemblyAttribute Include="System.CLSCompliant">
-            <_Parameter1>false</_Parameter1>
-            <_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
-        </AssemblyAttribute>
-    </ItemGroup>
+	<ItemGroup Label="Assembly Metadata">
+		<AssemblyMetadata Include="BuildNumber" Value="$(BuildNumber)" Condition=" $(BuildNumber) != '' " />
+		<AssemblyMetadata Include="BuildId" Value="$(BuildId)" Condition=" $(BuildId) != '' " />
+		<AssemblyAttribute Include="System.CLSCompliant">
+			<_Parameter1>false</_Parameter1>
+			<_Parameter1_IsLiteral>true</_Parameter1_IsLiteral>
+		</AssemblyAttribute>
+	</ItemGroup>
 
-    <ItemGroup Condition=" '$(SignAssembly)' == 'True' ">
-        <InternalsVisibleTo Include="$(AssemblyName).Tests">
-            <PublicKey>002400000480000094000000060200000024000052534131000400000100010063d172b113c8e7f634526e73d2d494a19074863d0a0689c333914a22d76e8757a87808d2a10978890ddb4a7a2a77c50a531df07a6ed54773b6e8de02edd25d75b48bc08dd010b3ff5605e9af637b9c194f43bac725b111dcb63e677cff3611646e0ec717db2448ddaae02a061f3d2b18b8ef7240ce2a1a4f8f8b450f0ee5efc6</PublicKey>
-        </InternalsVisibleTo>
-    </ItemGroup>
+	<ItemGroup Condition=" '$(SignAssembly)' == 'True' ">
+		<InternalsVisibleTo Include="$(AssemblyName).Tests">
+			<PublicKey>002400000480000094000000060200000024000052534131000400000100010063d172b113c8e7f634526e73d2d494a19074863d0a0689c333914a22d76e8757a87808d2a10978890ddb4a7a2a77c50a531df07a6ed54773b6e8de02edd25d75b48bc08dd010b3ff5605e9af637b9c194f43bac725b111dcb63e677cff3611646e0ec717db2448ddaae02a061f3d2b18b8ef7240ce2a1a4f8f8b450f0ee5efc6</PublicKey>
+		</InternalsVisibleTo>
+	</ItemGroup>
 
-    <ItemGroup Condition=" '$(SignAssembly)' == 'False' OR '$(SignAssembly)' == '' ">
-        <InternalsVisibleTo Include="$(AssemblyName).Tests" />
-    </ItemGroup>
+	<ItemGroup Condition=" '$(SignAssembly)' == 'False' OR '$(SignAssembly)' == '' ">
+		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <None Include="images\icon.png" Pack="true" PackagePath="\" />
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="images\icon.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
-    <Target Name="TBC_CalculateAssemblyVersions" AfterTargets="MinVer">
-        <PropertyGroup>
-            <AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
-            <InformationalVersion Condition=" '$(GITHUB_ACTIONS)' == 'true' ">$(MinVerVersion)</InformationalVersion>
-        </PropertyGroup>
-    </Target>
+	<Target Name="TBC_CalculateAssemblyVersions" AfterTargets="MinVer">
+		<PropertyGroup>
+			<AssemblyVersion>$(MinVerMajor).$(MinVerMinor).$(MinVerPatch).0</AssemblyVersion>
+			<InformationalVersion Condition=" '$(GITHUB_ACTIONS)' == 'true' ">$(MinVerVersion)</InformationalVersion>
+		</PropertyGroup>
+	</Target>
 
 </Project>
