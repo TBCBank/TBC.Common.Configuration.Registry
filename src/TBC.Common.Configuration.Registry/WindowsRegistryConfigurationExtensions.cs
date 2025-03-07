@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2019 TBC Bank
+ * Copyright (c) 2025 TBC Bank
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+#nullable enable
+
+#pragma warning disable IDE0130  // To allow usage without importing an additional namespace
 
 namespace Microsoft.Extensions.Configuration;
 
@@ -41,8 +45,8 @@ public static class WindowsRegistryConfigurationExtensions
     /// <param name="registryHive">Top-level Windows Registry hive.</param>
     /// <param name="optional">Whether or not the Registry key is optional.</param>
     /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
-#if NET5_0_OR_GREATER
-    [System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#if NET
+    [SupportedOSPlatform("windows")]
 #endif
     public static IConfigurationBuilder AddWindowsRegistry(
         this IConfigurationBuilder builder,
@@ -52,26 +56,50 @@ public static class WindowsRegistryConfigurationExtensions
     {
         _ = builder ?? throw new ArgumentNullException(nameof(builder));
 
-        if (string.IsNullOrWhiteSpace(rootKey))
-        {
-            throw new ArgumentNullException(nameof(rootKey));
-        }
-
         if (IsWindows)
         {
-            return builder.Add(
-                new WindowsRegistryConfigurationSource(
-                    new WindowsRegistryConfigurationOptions(rootKey, registryHive) { Optional = optional }));
+            if (string.IsNullOrWhiteSpace(rootKey))
+            {
+                throw new ArgumentNullException(nameof(rootKey));
+            }
+
+            return builder.Add(new WindowsRegistryConfigurationSource { RegistryHive = registryHive, RootKey = rootKey, Optional = optional });
         }
 
         return builder;
     }
 
-#if NET5_0_OR_GREATER
-    [System.Runtime.Versioning.SupportedOSPlatformGuard("windows")]
+    /// <summary>
+    /// Adds the Windows Registry configuration provider at <paramref name="rootKey"/>
+    /// to <paramref name="builder"/>.
+    /// </summary>
+    /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
+    /// <param name="rootKey">The root key path.</param>
+    /// <param name="registryHive">Top-level Windows Registry hive.</param>
+    /// <param name="optional">Whether or not the Registry key is optional.</param>
+    /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
+#if NET
+    [SupportedOSPlatform("windows")]
+#endif
+    public static IConfigurationBuilder AddWindowsRegistry(
+        this IConfigurationBuilder builder,
+        Action<WindowsRegistryConfigurationSource>? configureSource)
+    {
+        _ = builder ?? throw new ArgumentNullException(nameof(builder));
+
+        if (IsWindows)
+        {
+            return builder.Add(configureSource);
+        }
+
+        return builder;
+    }
+
+#if NET
+    [SupportedOSPlatformGuard("windows")]
 #endif
     private static bool IsWindows =>
-#if NET5_0_OR_GREATER
+#if NET
         OperatingSystem.IsWindows();
 #else
         RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
