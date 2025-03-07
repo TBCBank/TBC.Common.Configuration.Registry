@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2019 TBC Bank
+ * Copyright (c) 2025 TBC Bank
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,8 +28,8 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 
-#if NET5_0_OR_GREATER
-[System.Runtime.Versioning.SupportedOSPlatform("windows")]
+#if NET
+[SupportedOSPlatform("windows")]
 #endif
 internal sealed class WindowsRegistryTreeWalker : IDisposable
 {
@@ -50,8 +50,8 @@ internal sealed class WindowsRegistryTreeWalker : IDisposable
 
         _rootKey = registryHive switch
         {
-            RegistryHive.LocalMachine => Registry.LocalMachine.OpenSubKey(rootKeyPath),
-            RegistryHive.CurrentUser => Registry.CurrentUser.OpenSubKey(rootKeyPath),
+            RegistryHive.LocalMachine => Registry.LocalMachine.OpenSubKey(rootKeyPath, writable: false),
+            RegistryHive.CurrentUser => Registry.CurrentUser.OpenSubKey(rootKeyPath, writable: false),
             _ => throw new ArgumentOutOfRangeException(nameof(registryHive)),
         };
 
@@ -89,7 +89,7 @@ internal sealed class WindowsRegistryTreeWalker : IDisposable
     {
         string[] valueNames = key.GetValueNames();
 
-        if (valueNames != null && valueNames.Length > 0)
+        if (valueNames is { Length: > 0 })
         {
             foreach (string valueName in valueNames)
             {
@@ -101,11 +101,11 @@ internal sealed class WindowsRegistryTreeWalker : IDisposable
 
         string[] keyNames = key.GetSubKeyNames();
 
-        if (keyNames != null && keyNames.Length > 0)
+        if (keyNames is { Length: > 0 })
         {
             foreach (string keyName in keyNames)
             {
-                using var subKey = key.OpenSubKey(keyName);
+                using var subKey = key.OpenSubKey(keyName, writable: false);
 
                 EnterContext(keyName);
                 VisitRegistryKey(subKey);
