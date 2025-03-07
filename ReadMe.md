@@ -1,5 +1,5 @@
 
-# Windows Registry based .NET Core Configuration Provider
+# Windows Registry based .NET Configuration Provider
 
 [![NuGet version (TBC.Common.Configuration.Registry)](https://img.shields.io/nuget/v/TBC.Common.Configuration.Registry.svg)](https://www.nuget.org/packages/TBC.Common.Configuration.Registry/)
 [![CI](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/main.yml/badge.svg)](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/main.yml)
@@ -21,7 +21,7 @@ dotnet add package TBC.Common.Configuration.Registry
 ```
 
 ```xml
-<PackageReference Include="TBC.Common.Configuration.Registry" Version="2.1.0" />
+<PackageReference Include="TBC.Common.Configuration.Registry" Version="3.0.0" />
 ```
 
 ### Example: Add Windows Registry provider to builder pipeline
@@ -59,6 +59,27 @@ if (OperatingSystem.IsWindows())
 
 // ...
 ```
+
+### Example: Enable Reloading the Configuration on Registry Changes
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+
+if (OperatingSystem.IsWindows())
+{
+    builder.Configuration.AddWindowsRegistry(options =>
+    {
+        options.RootKey = @"SOFTWARE\MyCompany\MyApp";
+        options.ReloadOnChange = true;
+    });
+}
+
+// ...
+```
+
+Reloaded settings become immediately available if you're using [IConfiguration* interfaces](https://learn.microsoft.com/en-us/dotnet/core/extensions/configuration#binding) directly.
+
+See Microsoft's documentation on [how to read updated settings using Options pattern](https://learn.microsoft.com/en-us/dotnet/core/extensions/options#use-ioptionssnapshot-to-read-updated-data).
 
 ### Example: A .REG file to import into Windows Registry
 
@@ -130,4 +151,5 @@ Register options in `Startup.ConfigureServices()` method:
 services.AddOptions<MyConfigOptions>().BindConfiguration("MyConfig");
 ```
 
-Now you can inject `IOptions<MyConfigOptions>` into transient services and `IOptionsMonitor<MyConfigOptions>` into singleton ones.
+Now you can inject `IOptions<MyConfigOptions>` or `IOptionsSnapshot<MyConfigOptions>` into transient services
+and `IOptionsMonitor<MyConfigOptions>` into singleton ones.
