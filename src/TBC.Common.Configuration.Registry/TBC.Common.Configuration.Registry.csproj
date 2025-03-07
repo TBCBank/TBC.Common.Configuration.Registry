@@ -1,9 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net9.0;net8.0;net6.0;net471;netstandard2.0</TargetFrameworks>
+		<TargetFrameworks>net9.0;net8.0;net471;netstandard2.0</TargetFrameworks>
 		<LangVersion>latest</LangVersion>
 		<RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<IsPackable>true</IsPackable>
 		<Authors>george.chakhidze</Authors>
 		<Company>TBC Bank</Company>
@@ -25,7 +26,7 @@
 		<Deterministic>false</Deterministic>
 		<!-- AssemblyVersion is pinned because it is a part of the strong name. See Versioning.cs file -->
 		<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-		<NoWarn>$(NoWarn);S125</NoWarn>
+		<NoWarn>$(NoWarn);IDE0079;IDE0290;S125</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
@@ -50,23 +51,19 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="SonarAnalyzer.CSharp" Version="9.*">
+		<PackageReference Include="SonarAnalyzer.CSharp" Version="10.*">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.*" />
 		<PackageReference Include="Microsoft.Win32.Registry" Version="5.*" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net471' ">
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
-	</ItemGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.*" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.*" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
@@ -79,6 +76,10 @@
 
 	<ItemGroup>
 		<SupportedPlatform Include="Windows" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" $([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0')) ">
+		<Using Include="System.Runtime.Versioning" />
 	</ItemGroup>
 
 	<ItemGroup Label="Assembly Metadata">
