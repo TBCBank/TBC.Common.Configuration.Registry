@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2019 TBC Bank
+ * Copyright (c) 2025 TBC Bank
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+#nullable enable
+
 namespace TBC.Common.Configuration.Registry.Tests;
 
 using System;
@@ -27,11 +29,21 @@ using Microsoft.Extensions.Configuration;
 
 internal static class ConfigurationProviderExtensions
 {
-    public static string Get(this IConfigurationProvider provider, string key)
+    public static string? Get(this IConfigurationProvider provider, string key)
     {
-        if (!provider.TryGet(key, out string value))
+        if (!provider.TryGet(key, out var value))
         {
             throw new InvalidOperationException("Key not found");
+        }
+
+        return value;
+    }
+
+    public static string? GetOrNull(this IConfigurationProvider provider, string key)
+    {
+        if (!provider.TryGet(key, out var value))
+        {
+            return null;
         }
 
         return value;

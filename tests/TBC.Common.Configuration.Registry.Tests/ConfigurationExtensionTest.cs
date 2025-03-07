@@ -1,5 +1,5 @@
-/*
- * Copyright (c) 2019 TBC Bank
+﻿/*
+ * Copyright (c) 2025 TBC Bank
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,6 +24,7 @@ namespace TBC.Common.Configuration.Registry.Tests;
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 
@@ -43,68 +44,163 @@ public sealed class ConfigurationExtensionTest : IDisposable
     [Fact(DisplayName = "WindowsRegistryConfigurationProvider Load")]
     public void WindowsRegistryConfigurationProvider_LoadKeyValuePairsFromRegistryKey()
     {
-        var options = new WindowsRegistryConfigurationOptions(RootKey, RegistryHive.CurrentUser);
-        var config = new WindowsRegistryConfigurationProvider(options);
+        var builder = new ConfigurationBuilder();
 
-        config.Load();
+        builder.AddWindowsRegistry(RootKey, RegistryHive.CurrentUser);
 
-        Assert.Equal("TestConnectionString", config.Get("defaultconnection:ConnectionString"));
-        Assert.Equal("SqlClient", config.Get("DEFAULTCONNECTION:PROVIDER"));
-        Assert.Equal("AnotherTestConnectionString", config.Get("Inventory:CONNECTIONSTRING"));
-        Assert.Equal("MySql", config.Get("Inventory:Provider"));
+        var config = builder.Build();
+        try
+        {
+            Assert.Equal("TestConnectionString", config.GetValue<string>("defaultconnection:ConnectionString"));
+            Assert.Equal("SqlClient", config.GetValue<string>("DEFAULTCONNECTION:PROVIDER"));
+            Assert.Equal("AnotherTestConnectionString", config.GetValue<string>("Inventory:CONNECTIONSTRING"));
+            Assert.Equal("MySql", config.GetValue<string>("Inventory:Provider"));
+        }
+        finally
+        {
+            (config as IDisposable)?.Dispose();
+        }
+    }
+
+    [Fact(DisplayName = "WindowsRegistryConfigurationProvider ReloadOnChange")]
+    public async Task WindowsRegistryConfigurationProvider_ObserveReloadOnChange()
+    {
+        var builder = new ConfigurationBuilder();
+
+        builder.AddWindowsRegistry(static x =>
+        {
+            x.RootKey = RootKey;
+            x.RegistryHive = RegistryHive.CurrentUser;
+            x.ReloadOnChange = true;
+        });
+
+        var reloadHappened = false;
+
+        var config = builder.Build();
+        try
+        {
+            Assert.Equal("TestConnectionString", config["defaultconnection:ConnectionString"]);
+            Assert.Equal("SqlClient", config["DEFAULTCONNECTION:PROVIDER"]);
+            Assert.Equal("AnotherTestConnectionString", config["Inventory:CONNECTIONSTRING"]);
+            Assert.Equal("MySql", config["Inventory:Provider"]);
+
+            config.GetReloadToken().RegisterChangeCallback(s => { reloadHappened = true; }, state: null);
+
+            using (var editKey = Registry.CurrentUser.OpenSubKey(RootKey, writable: true))
+            using (var connStr = editKey.OpenSubKey("DefaultConnection", writable: true))
+            {
+                connStr.SetValue("Provider", "SQLite", RegistryValueKind.String);
+                editKey.Flush();
+            }
+
+            await Task.Delay(1000);  // Change monitoring happens in background. We can sleep
+
+            Assert.True(reloadHappened);
+            Assert.Equal("SQLite", config["DEFAULTCONNECTION:PROVIDER"]);
+        }
+        finally
+        {
+            (config as IDisposable)?.Dispose();
+        }
+    }
+
+    [Fact(DisplayName = "WindowsRegistryConfigurationProvider Optional Non-Existent")]
+    public void WindowsRegistryConfigurationProvider_Optional_NonExistent()
+    {
+        var builder = new ConfigurationBuilder();
+
+        builder.AddWindowsRegistry(static x =>
+        {
+            x.RootKey = $"SOFTWARE\\TBC Bank\\DoesNotExist_{Guid.NewGuid():N}";
+            x.RegistryHive = RegistryHive.CurrentUser;
+            x.ReloadOnChange = true;
+        });
+
+        var config = builder.Build();
+        try
+        {
+            Assert.Null(config["defaultconnection:ConnectionString"]);
+            Assert.Null(config["DEFAULTCONNECTION:PROVIDER"]);
+            Assert.Null(config["Inventory:CONNECTIONSTRING"]);
+            Assert.Null(config["Inventory:Provider"]);
+        }
+        finally
+        {
+            (config as IDisposable)?.Dispose();
+        }
     }
 
     [Fact(DisplayName = "AddWindowsRegistry Build")]
     public void AddWindowsRegistry_BuildConfiguration()
     {
-        var settings = new ConfigurationBuilder()
+        var config = new ConfigurationBuilder()
             .AddWindowsRegistry(RootKey, RegistryHive.CurrentUser)
-            .Build()
-            .AsEnumerable()
-            .Where(i => i.Value != null)
-            .ToDictionary(i => i.Key, i => i.Value, StringComparer.OrdinalIgnoreCase);
+            .Build();
+        try
+        {
+            var settings = config
+                .AsEnumerable()
+                .Where(i => i.Value != null)
+                .ToDictionary(i => i.Key, i => i.Value, StringComparer.OrdinalIgnoreCase);
 
-        Assert.NotNull(settings);
-        Assert.NotEmpty(settings);
+            Assert.NotNull(settings);
+            Assert.NotEmpty(settings);
+        }
+        finally
+        {
+            (config as IDisposable)?.Dispose();
+        }
     }
 
     [Fact(DisplayName = "AddWindowsRegistry Optional")]
     public void AddWindowsRegistry_BuildOptionalConfiguration()
     {
-        var settings = new ConfigurationBuilder()
-            .AddWindowsRegistry($"SOFTWARE\\DoesNotExist\\{Guid.NewGuid():N}", RegistryHive.CurrentUser, optional: true)
+        var config = new ConfigurationBuilder()
+            .AddWindowsRegistry($"SOFTWARE\\TBC Bank\\DoesNotExist\\{Guid.NewGuid():N}", RegistryHive.CurrentUser, optional: true)
             .Build();
-
-        Assert.NotNull(settings);
+        try
+        {
+            Assert.NotNull(config);
+        }
+        finally
+        {
+            (config as IDisposable)?.Dispose();
+        }
     }
 
     [Fact(DisplayName = "WindowsRegistryConfigurationProvider Array")]
     public void WindowsRegistryConfigurationProvider_ReadArray()
     {
-        var settings = new ConfigurationBuilder()
+        var config = new ConfigurationBuilder()
             .AddWindowsRegistry(RootKey, RegistryHive.CurrentUser)
             .Build();
+        try
+        {
+            var usersSection = config.GetSection("Users");
 
-        var usersSection = settings.GetSection("Users");
+            var array = usersSection.AsEnumerable();
 
-        var array = usersSection.AsEnumerable();
+            Assert.NotNull(array);
+            Assert.NotEmpty(array);
 
-        Assert.NotNull(array);
-        Assert.NotEmpty(array);
+            var user1a = usersSection["0"];
+            var user1b = config["Users:0"];
 
-        var user1a = usersSection["0"];
-        var user1b = settings["Users:0"];
+            Assert.NotNull(user1a);
+            Assert.NotNull(user1b);
+            Assert.Equal(user1a, user1b);
 
-        Assert.NotNull(user1a);
-        Assert.NotNull(user1b);
-        Assert.Equal(user1a, user1b);
+            var user2a = usersSection["1"];
+            var user2b = config["Users:1"];
 
-        var user2a = usersSection["1"];
-        var user2b = settings["Users:1"];
-
-        Assert.NotNull(user2a);
-        Assert.NotNull(user2b);
-        Assert.Equal(user2a, user2b);
+            Assert.NotNull(user2a);
+            Assert.NotNull(user2b);
+            Assert.Equal(user2a, user2b);
+        }
+        finally
+        {
+            (config as IDisposable)?.Dispose();
+        }
     }
 
     [Theory(DisplayName = "WindowsRegistryTreeWalker Unsupported Hive")]
@@ -121,10 +217,10 @@ public sealed class ConfigurationExtensionTest : IDisposable
     }
 
     [Theory]
-    [InlineData("SOFTWARE\\DoesNotExist1\\6475D6101A5443E5AEB62A971D98C394", RegistryHive.LocalMachine)]
-    [InlineData("SOFTWARE\\DoesNotExist2\\57E4A5F3F1E34F679A0D4016595DF227", RegistryHive.LocalMachine)]
-    [InlineData("SOFTWARE\\DoesNotExist3\\84852EF9580F4983A0DF4760800F568F", RegistryHive.CurrentUser)]
-    [InlineData("SOFTWARE\\DoesNotExist4\\43D648A261694197BE049D25E9B3A789", RegistryHive.CurrentUser)]
+    [InlineData("SOFTWARE\\TBC Bank\\DoesNotExist1\\6475D6101A5443E5AEB62A971D98C394", RegistryHive.LocalMachine)]
+    [InlineData("SOFTWARE\\TBC Bank\\DoesNotExist2\\57E4A5F3F1E34F679A0D4016595DF227", RegistryHive.LocalMachine)]
+    [InlineData("SOFTWARE\\TBC Bank\\DoesNotExist3\\84852EF9580F4983A0DF4760800F568F", RegistryHive.CurrentUser)]
+    [InlineData("SOFTWARE\\TBC Bank\\DoesNotExist4\\43D648A261694197BE049D25E9B3A789", RegistryHive.CurrentUser)]
     public void WindowsRegistryTreeWalker_RootKeyNotFound(string rootKey, RegistryHive hive)
     {
         Assert.Throws<InvalidOperationException>(() =>
