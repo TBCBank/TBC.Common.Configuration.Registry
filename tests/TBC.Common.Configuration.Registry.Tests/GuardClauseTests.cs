@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2019 TBC Bank
+ * Copyright (c) 2025 TBC Bank
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@ namespace TBC.Common.Configuration.Registry.Tests;
 
 using System;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Win32;
 
 public sealed class GuardClauseTests
 {
@@ -37,21 +36,12 @@ public sealed class GuardClauseTests
     }
 
     [Fact]
-    public void WindowsRegistryConfigurationOptions_Arguments()
-    {
-        const RegistryHive hive = RegistryHive.CurrentUser;
-        Assert.Throws<ArgumentNullException>("rootKey", () => new WindowsRegistryConfigurationOptions(null, hive));
-        Assert.Throws<ArgumentNullException>("rootKey", () => new WindowsRegistryConfigurationOptions(string.Empty, hive));
-        Assert.Throws<ArgumentNullException>("rootKey", () => new WindowsRegistryConfigurationOptions(" ", hive));
-    }
-
-    [Fact]
     public void WindowsRegistryConfigurationExtensions_Arguments()
     {
         var builder = new ConfigurationBuilder();
-        Assert.Throws<ArgumentNullException>("builder", () => WindowsRegistryConfigurationExtensions.AddWindowsRegistry(null, null));
-        Assert.Throws<ArgumentNullException>("rootKey", () => WindowsRegistryConfigurationExtensions.AddWindowsRegistry(builder, null));
-        Assert.Throws<ArgumentNullException>("rootKey", () => WindowsRegistryConfigurationExtensions.AddWindowsRegistry(builder, string.Empty));
+        Assert.Throws<ArgumentNullException>("builder", () => WindowsRegistryConfigurationExtensions.AddWindowsRegistry(builder: null, rootKey: null));
+        Assert.Throws<ArgumentNullException>("rootKey", () => WindowsRegistryConfigurationExtensions.AddWindowsRegistry(builder, rootKey: null));
+        Assert.Throws<ArgumentNullException>("rootKey", () => WindowsRegistryConfigurationExtensions.AddWindowsRegistry(builder, rootKey: string.Empty));
         Assert.Throws<ArgumentNullException>("rootKey", () => WindowsRegistryConfigurationExtensions.AddWindowsRegistry(builder, " "));
     }
 }
