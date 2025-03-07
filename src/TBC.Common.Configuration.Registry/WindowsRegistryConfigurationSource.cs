@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2019 TBC Bank
+ * Copyright (c) 2025 TBC Bank
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,35 +20,67 @@
  * SOFTWARE.
  */
 
+#nullable enable
+
+#pragma warning disable CA1416, CA2208, MA0015, S3928
+
 namespace TBC.Common.Configuration.Registry;
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Win32;
 
 /// <summary>
 /// Represents a Windows Registry key as an <see cref="IConfigurationSource"/>.
 /// </summary>
-#if NET5_0_OR_GREATER
-[System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
 public class WindowsRegistryConfigurationSource : IConfigurationSource
 {
-    private readonly WindowsRegistryConfigurationOptions _options;
+    /// <summary>
+    /// The root key path.
+    /// </summary>
+    [DisallowNull]
+    public string? RootKey { get; set; }
 
     /// <summary>
-    /// Initializes a new instance with the specified options.
+    /// The top-level Windows Registry node.
     /// </summary>
-    /// <param name="options">The configuration options.</param>
-    public WindowsRegistryConfigurationSource(WindowsRegistryConfigurationOptions options)
-    {
-        _options = options ?? throw new ArgumentNullException(nameof(options));
-    }
+    public RegistryHive RegistryHive { get; set; } = RegistryHive.LocalMachine;
+
+    /// <summary>
+    /// Determines if loading the configuration is optional.
+    /// </summary>
+    public bool Optional { get; set; } = true;
+
+    /// <summary>
+    /// Determines if the source will be reloaded when the underlying Registry key changes.
+    /// </summary>
+    public bool ReloadOnChange { get; set; }
+
+    /// <summary>
+    /// An action that's called if an uncaught exception occurs in <see cref="WindowsRegistryConfigurationProvider.Load"/>.
+    /// </summary>
+    public Action<LoadExceptionContext>? OnLoadException { get; set; }
 
     /// <summary>
     /// Builds the <see cref="WindowsRegistryConfigurationProvider"/> for this source.
     /// </summary>
     /// <param name="builder">The <see cref="IConfigurationBuilder"/>.</param>
-    /// <returns>A <see cref="WindowsRegistryConfigurationProvider"/></returns>
-    public IConfigurationProvider Build(IConfigurationBuilder builder) =>
-        new WindowsRegistryConfigurationProvider(_options);
+    /// <returns>A <see cref="WindowsRegistryConfigurationProvider"/>.</returns>
+    public IConfigurationProvider Build(IConfigurationBuilder builder)
+    {
+        if (string.IsNullOrWhiteSpace(this.RootKey))
+        {
+            throw new ArgumentNullException(nameof(RootKey));
+        }
+
+        OnLoadException ??= DefaultExceptionHandler;
+
+        return new WindowsRegistryConfigurationProvider(this);
+    }
+
+    private static void DefaultExceptionHandler(LoadExceptionContext context)
+    {
+        context.Ignore = context.Provider.Source.Optional;
+    }
 }

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2019 TBC Bank
+ * Copyright (c) 2025 TBC Bank
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,45 +23,38 @@
 namespace TBC.Common.Configuration.Registry;
 
 using System;
-using Microsoft.Win32;
 
 /// <summary>
-/// Options for <see cref="WindowsRegistryConfigurationSource"/>.
+/// Contains information about a key/value load exception.
 /// </summary>
-#if NET5_0_OR_GREATER
-[System.Runtime.Versioning.SupportedOSPlatform("windows")]
-#endif
-public class WindowsRegistryConfigurationOptions
+public class LoadExceptionContext
 {
     /// <summary>
-    /// The root key path.
+    /// Initializes a new instance of the <see cref="LoadExceptionContext"/> class.
     /// </summary>
-    public string RootKey { get; set; }
-
-    /// <summary>
-    /// The top-level Windows Registry node.
-    /// </summary>
-    public RegistryHive RegistryHive { get; set; } = RegistryHive.LocalMachine;
-
-    /// <summary>
-    /// Determines if loading the configuration is optional.
-    /// </summary>
-    public bool Optional { get; set; }
-
-    /// <summary>
-    /// Initializes a new instance with the specified options.
-    /// </summary>
-    /// <param name="rootKey">The root key path.</param>
-    /// <param name="registryHive">The top-level Windows Registry node.</param>
-    public WindowsRegistryConfigurationOptions(string rootKey, RegistryHive registryHive)
+    /// <param name="provider">The configuration provider.</param>
+    /// <param name="exception">An exception instance.</param>
+    internal LoadExceptionContext(WindowsRegistryConfigurationProvider provider, Exception exception)
     {
-        if (string.IsNullOrWhiteSpace(rootKey))
-        {
-            throw new ArgumentNullException(nameof(rootKey));
-        }
-
-        this.RootKey = rootKey;
-        this.RegistryHive = registryHive;
-        this.Optional = true;
+        Provider = provider;
+        Exception = exception;
     }
+
+    /// <summary>
+    /// The <see cref="WindowsRegistryConfigurationProvider"/> that caused the exception.
+    /// </summary>
+    public WindowsRegistryConfigurationProvider Provider { get; }
+
+    /// <summary>
+    /// The exception that occurred in <see cref="WindowsRegistryConfigurationProvider.Load"/>.
+    /// </summary>
+    public Exception Exception { get; }
+
+    /// <summary>
+    /// A value that indicates whether the exception should be rethrown.
+    /// </summary>
+    /// <value>
+    /// <see langword="true"/> if the exception should be rethrown; otherwise, <see langword="false"/>.
+    /// </value>
+    public bool Ignore { get; set; }
 }
