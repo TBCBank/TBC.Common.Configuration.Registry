@@ -8,7 +8,7 @@
 		<IsPackable>true</IsPackable>
 		<Authors>george.chakhidze</Authors>
 		<Company>TBC Bank</Company>
-		<Copyright>© TBC Bank. All rights reserved.</Copyright>
+		<Copyright>&#169; TBC Bank. All rights reserved.</Copyright>
 		<PackageProjectUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/TBCBank/TBC.Common.Configuration.Registry</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
@@ -21,16 +21,13 @@
 		<DebugType>embedded</DebugType>
 		<EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisLevel>latest-all</AnalysisLevel>
-		<Features>strict</Features>
+		<Features>$(Features);strict</Features>
 		<WarningLevel>9999</WarningLevel>
 		<Deterministic>false</Deterministic>
 		<!-- AssemblyVersion is pinned because it is a part of the strong name. See Versioning.cs file -->
 		<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
-		<NoWarn>$(NoWarn);IDE0079;IDE0290;S125</NoWarn>
-	</PropertyGroup>
-
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);IDE0079;IDE0290;S125</NoWarn>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TF_BUILD)' == 'True' or '$(GITHUB_ACTIONS)' == 'true' ">
@@ -104,6 +101,12 @@
 	<ItemGroup>
 		<None Include="images\icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
+
+	<Target Name="TBC_PrepareReleaseNotes" BeforeTargets="GenerateNuspec" DependsOnTargets="GetBuildVersion">
+		<PropertyGroup>
+			<PackageReleaseNotes Condition="'$(RepositoryUrl)'!=''">$(RepositoryUrl)/releases/tag/$(Version)</PackageReleaseNotes>
+		</PropertyGroup>
+	</Target>
 
 	<Target Name="TBC_CalculateAssemblyVersions" AfterTargets="MinVer">
 		<PropertyGroup>
