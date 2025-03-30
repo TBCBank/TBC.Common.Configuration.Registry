@@ -27,9 +27,11 @@
 namespace Microsoft.Extensions.Configuration;
 
 using System;
-using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using TBC.Common.Configuration.Registry;
+#if !NET
+using System.Runtime.InteropServices;
+#endif
 
 /// <summary>
 /// Extension methods for adding <see cref="WindowsRegistryConfigurationProvider"/>.
@@ -70,13 +72,11 @@ public static class WindowsRegistryConfigurationExtensions
     }
 
     /// <summary>
-    /// Adds the Windows Registry configuration provider at <paramref name="rootKey"/>
+    /// Adds the Windows Registry configuration provider at <see cref="WindowsRegistryConfigurationSource.RootKey"/>
     /// to <paramref name="builder"/>.
     /// </summary>
     /// <param name="builder">The <see cref="IConfigurationBuilder"/> to add to.</param>
-    /// <param name="rootKey">The root key path.</param>
-    /// <param name="registryHive">Top-level Windows Registry hive.</param>
-    /// <param name="optional">Whether or not the Registry key is optional.</param>
+    /// <param name="configureSource">A method used to configure the source.</param>
     /// <returns>The <see cref="IConfigurationBuilder"/>.</returns>
 #if NET
     [SupportedOSPlatform("windows")]
