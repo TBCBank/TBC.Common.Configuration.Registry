@@ -93,7 +93,7 @@ public sealed class ConfigurationExtensionTest : IDisposable
                 editKey.Flush();
             }
 
-            await Task.Delay(1000);  // Change monitoring happens in background. We can sleep
+            await Task.Delay(1200, TestContext.Current.CancellationToken);  // Change monitoring happens in background. We can sleep
 
             Assert.True(reloadHappened);
             Assert.Equal("SQLite", config["DEFAULTCONNECTION:PROVIDER"]);
