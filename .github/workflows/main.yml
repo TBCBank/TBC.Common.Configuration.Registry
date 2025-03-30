@@ -43,5 +43,5 @@ jobs:
 
     - name: Test
       run: |
-        dotnet test -c Release -r net9.0 --no-build --verbosity normal '--collect:"XPlat Code Coverage"' --results-directory "$env:GITHUB_WORKSPACE/coverage/" --% -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.SkipAutoProps=true
+        dotnet test -c Release -f net9.0 --no-build --verbosity normal '--collect:"XPlat Code Coverage"' --results-directory "$env:GITHUB_WORKSPACE/coverage/" --% -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.SkipAutoProps=true
         echo "CODE_COVERAGE_PATH=$($(dir "$env:GITHUB_WORKSPACE/coverage/" -filter 'coverage.cobertura.xml' -recurse | select -first 1).FullName)" >> $GITHUB_ENV
