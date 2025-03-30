@@ -39,7 +39,7 @@ jobs:
       run: dotnet restore -p:Configuration=Release
 
     - name: Build
-      run: dotnet build --no-build -c Release "-p:SourceRevisionId=$(git rev-parse --short $env:GITHUB_SHA)"
+      run: dotnet build --no-restore -c Release "-p:SourceRevisionId=$(git rev-parse --short $env:GITHUB_SHA)"
 
     - name: Test
       run: |
