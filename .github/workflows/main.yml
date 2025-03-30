@@ -39,9 +39,10 @@ jobs:
       run: dotnet restore -p:Configuration=Release
 
     - name: Build
-      run: dotnet build -c Release --no-restore "-p:SourceRevisionId=$(git rev-parse --short $env:GITHUB_SHA)"
+      run: dotnet build -c Release "-p:SourceRevisionId=$(git rev-parse --short $env:GITHUB_SHA)"
 
     - name: Test
       run: |
+        dotnet restore -p:Configuration=Release -p:TargetFramework=net9.0
         dotnet test -c Release -f net9.0 --verbosity normal '--collect:"XPlat Code Coverage"' --results-directory "$env:GITHUB_WORKSPACE/coverage/" --% -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=cobertura DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.SkipAutoProps=true
         echo "CODE_COVERAGE_PATH=$($(dir "$env:GITHUB_WORKSPACE/coverage/" -filter 'coverage.cobertura.xml' -recurse | select -first 1).FullName)" >> $GITHUB_ENV
