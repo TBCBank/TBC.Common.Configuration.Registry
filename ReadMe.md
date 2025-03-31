@@ -5,6 +5,9 @@
 [![CI](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/main.yml/badge.svg)](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/main.yml)
 [![CodeQL](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/TBCBank/TBC.Common.Configuration.Registry/actions/workflows/codeql-analysis.yml)
 [![Downloads](https://img.shields.io/nuget/dt/TBC.Common.Configuration.Registry)](https://www.nuget.org/packages/TBC.Common.Configuration.Registry/)
+[![License](https://img.shields.io/github/license/TBCBank/TBC.Common.Configuration.Registry)](License.txt)
+[![GitHub Release Date](https://img.shields.io/github/release-date/TBCBank/TBC.Common.Configuration.Registry?label=released)](https://github.com/TBCBank/TBC.Common.Configuration.Registry/releases)
+![Size](https://img.shields.io/github/repo-size/TBCBank/TBC.Common.Configuration.Registry)
 
 Allows loading configuration data from a Windows Registry key.
 
