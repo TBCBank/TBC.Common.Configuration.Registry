@@ -6,7 +6,6 @@
 #pragma warning disable CA1031, CA1032, CA1064, CA2000
 #pragma warning disable MA0042, MA0048, MA0051, MA0071, MA0100, MA0134
 #pragma warning disable S3218, S3236, S3871, S4070
-#pragma warning disable SYSLIB1054  // Must remain compatible with .NET Standard
 
 using System;
 using System.Collections.Generic;
@@ -29,7 +28,7 @@ namespace TBC.Common.Configuration.Registry;
 #else
 [ExcludeFromCodeCoverage]
 #endif
-internal static class RegistryKeyExtensions
+internal static partial class RegistryKeyExtensions
 {
     /// <summary>
     /// Returns a Task that completes when the specified registry key changes.
@@ -49,7 +48,11 @@ internal static class RegistryKeyExtensions
     {
         EnsureSupported();
 
+#if NET
+        ArgumentNullException.ThrowIfNull(registryKey);
+#else
         _ = registryKey ?? throw new ArgumentNullException(nameof(registryKey));
+#endif
 
         return WaitForRegistryChangeAsync(registryKey.Handle, watchSubtree, change, cancellationToken);
     }
@@ -160,7 +163,11 @@ internal static class RegistryKeyExtensions
     /// </remarks>
     internal static Task<bool> ToTask(this WaitHandle handle, int timeout = Timeout.Infinite, CancellationToken cancellationToken = default)
     {
+#if NET
+        ArgumentNullException.ThrowIfNull(handle);
+#else
         _ = handle ?? throw new ArgumentNullException(nameof(handle));
+#endif
 
         // Check whether the handle is already signaled as an optimization.
         // But even for WaitOne(0) the CLR can pump messages if called on the UI thread, which the caller may not
@@ -284,7 +291,11 @@ internal static class RegistryKeyExtensions
         /// </returns>
         public override unsafe int Wait(IntPtr[] waitHandles, bool waitAll, int millisecondsTimeout)
         {
+#if NET
+            ArgumentNullException.ThrowIfNull(waitHandles);
+#else
             _ = waitHandles ?? throw new ArgumentNullException(nameof(waitHandles));
+#endif
 
             // On .NET Framework we must take special care to NOT end up in a call to CoWait (which lets in RPC calls).
             // Off Windows, we can't p/invoke to kernel32, but it appears that .NET Core never calls CoWait, so we can rely on default behavior.
@@ -433,7 +444,11 @@ internal static class RegistryKeyExtensions
         /// </remarks>
         internal static async Task<IDisposable> ExecuteOnDedicatedThreadAsync(Action action)
         {
+#if NET
+            ArgumentNullException.ThrowIfNull(action);
+#else
             _ = action ?? throw new ArgumentNullException(nameof(action));
+#endif
 
             var tcs = new TaskCompletionSource<EmptyStruct>();
             bool keepAliveCountIncremented = false;
@@ -589,13 +604,24 @@ internal static class RegistryKeyExtensions
         }
     }
 
-    internal static class Interop
+    internal static partial class Interop
     {
-        internal static class AdvApi32
+        internal static partial class AdvApi32
         {
-            [DllImport("advapi32.dll", ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
             [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-            internal static extern int RegNotifyChangeKeyValue(
+#if NET
+            [LibraryImport("advapi32.dll")]
+            [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+#else
+            [DllImport("advapi32.dll", ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+#endif
+            internal static
+#if NET
+                partial
+#else
+                extern
+#endif
+                int RegNotifyChangeKeyValue(
                 SafeHandle hKey,
                 [MarshalAs(UnmanagedType.Bool)] bool bWatchSubtree,
                 REG_NOTIFY_FILTER dwNotifyFilter,
@@ -604,11 +630,22 @@ internal static class RegistryKeyExtensions
             );
         }
 
-        internal static class Kernel32
+        internal static partial class Kernel32
         {
-            [DllImport("kernel32.dll", ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
             [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-            internal static extern unsafe uint WaitForMultipleObjects(
+#if NET
+            [LibraryImport("kernel32.dll")]
+            [UnmanagedCallConv(CallConvs = [typeof(CallConvStdcall)])]
+#else
+            [DllImport("kernel32.dll", ExactSpelling = true, CallingConvention = CallingConvention.StdCall)]
+#endif
+            internal static unsafe
+#if NET
+                partial
+#else
+                extern
+#endif
+                uint WaitForMultipleObjects(
                 uint nCount,
                 IntPtr* lpHandles,
                 [MarshalAs(UnmanagedType.Bool)] bool bWaitAll,
