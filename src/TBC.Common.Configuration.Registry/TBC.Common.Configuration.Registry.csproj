@@ -27,6 +27,8 @@
 		<!-- AssemblyVersion is pinned because it is a part of the strong name. See Versioning.cs file -->
 		<GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<EnablePackageValidation>true</EnablePackageValidation>
+		<IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)','net8.0'))">true</IsAotCompatible>
 		<NoWarn>$(NoWarn);IDE0079;IDE0290;S125</NoWarn>
 	</PropertyGroup>
 
@@ -104,7 +106,7 @@
 
 	<Target Name="TBC_PrepareReleaseNotes" BeforeTargets="GenerateNuspec" DependsOnTargets="GetBuildVersion">
 		<PropertyGroup>
-			<PackageReleaseNotes Condition="'$(RepositoryUrl)'!=''">$(RepositoryUrl)/releases/tag/$(Version)</PackageReleaseNotes>
+			<PackageReleaseNotes Condition=" '$(RepositoryUrl)' != '' ">$(RepositoryUrl)/releases/tag/$(Version)</PackageReleaseNotes>
 		</PropertyGroup>
 	</Target>
 
