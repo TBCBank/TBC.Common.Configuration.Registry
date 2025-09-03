@@ -45,6 +45,7 @@ using CultureInfo = System.Globalization.CultureInfo;
 public class WindowsRegistryConfigurationProvider : ConfigurationProvider, IDisposable
 {
     private CancellationTokenSource? _cancellationToken;
+    private int _loadingInProgress;  // Disallow concurrent reloading
     private Task? _reloaderTask;
 
     /// <summary>
@@ -54,6 +55,7 @@ public class WindowsRegistryConfigurationProvider : ConfigurationProvider, IDisp
     public WindowsRegistryConfigurationProvider(WindowsRegistryConfigurationSource options)
     {
         Source = options ?? throw new ArgumentNullException(nameof(options));
+        _loadingInProgress = 0;
     }
 
     internal WindowsRegistryConfigurationSource Source { get; }
@@ -63,14 +65,21 @@ public class WindowsRegistryConfigurationProvider : ConfigurationProvider, IDisp
     /// </summary>
     public override void Load()
     {
-        try
+        if (Interlocked.Exchange(ref _loadingInProgress, 1) == 0)
         {
-            using var regWalker = new WindowsRegistryTreeWalker(Source.RootKey, Source.RegistryHive, Source.Optional);
-            this.Data = regWalker.ParseTree();
-        }
-        catch (Exception error)
-        {
-            HandleException(ExceptionDispatchInfo.Capture(error));
+            try
+            {
+                using var regWalker = new WindowsRegistryTreeWalker(Source.RootKey, Source.RegistryHive, Source.Optional);
+                this.Data = regWalker.ParseTree();
+            }
+            catch (Exception error)
+            {
+                HandleException(ExceptionDispatchInfo.Capture(error));
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _loadingInProgress, 0);
+            }
         }
 
         // Schedule a background reloader task only if none exists and reload on changes is requested
@@ -161,8 +170,18 @@ public class WindowsRegistryConfigurationProvider : ConfigurationProvider, IDisp
                     // This delay should help avoid triggering an excessive reloads before an entire subtree is completely written
                     await Task.Delay(250, token).ConfigureAwait(false);
 
-                    using var regWalker = new WindowsRegistryTreeWalker(Source.RootKey, Source.RegistryHive, Source.Optional);
-                    this.Data = regWalker.ParseTree();
+                    if (Interlocked.Exchange(ref _loadingInProgress, 1) == 0)
+                    {
+                        try
+                        {
+                            using var regWalker = new WindowsRegistryTreeWalker(Source.RootKey, Source.RegistryHive, Source.Optional);
+                            this.Data = regWalker.ParseTree();
+                        }
+                        finally
+                        {
+                            Interlocked.Exchange(ref _loadingInProgress, 0);
+                        }
+                    }
                 }
                 catch (Exception error) when (error is not OperationCanceledException)
                 {
