@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/TBC.Common.Configuration.Registry/TBC.Common.Configuration.Registry.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/TBC.Common.Configuration.Registry.Tests/TBC.Common.Configuration.Registry.Tests.csproj" />
+  </Folder>
+</Solution>
