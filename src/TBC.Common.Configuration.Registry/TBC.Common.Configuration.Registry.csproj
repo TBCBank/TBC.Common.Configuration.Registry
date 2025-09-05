@@ -104,7 +104,7 @@
 		<None Include="images\icon.png" Pack="true" PackagePath="\" />
 	</ItemGroup>
 
-	<Target Name="TBC_PrepareReleaseNotes" BeforeTargets="GenerateNuspec" DependsOnTargets="GetBuildVersion">
+	<Target Name="TBC_PrepareReleaseNotes" BeforeTargets="GenerateNuspec" DependsOnTargets="MinVer">
 		<PropertyGroup>
 			<PackageReleaseNotes Condition=" '$(RepositoryUrl)' != '' ">$(RepositoryUrl)/releases/tag/$(Version)</PackageReleaseNotes>
 		</PropertyGroup>
