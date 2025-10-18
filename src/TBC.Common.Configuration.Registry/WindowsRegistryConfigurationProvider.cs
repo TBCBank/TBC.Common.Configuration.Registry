@@ -54,7 +54,12 @@ public class WindowsRegistryConfigurationProvider : ConfigurationProvider, IDisp
     /// <param name="options">The configuration options.</param>
     public WindowsRegistryConfigurationProvider(WindowsRegistryConfigurationSource options)
     {
+#if NET
+        ArgumentNullException.ThrowIfNull(options);
+        Source = options;
+#else
         Source = options ?? throw new ArgumentNullException(nameof(options));
+#endif
         _loadingInProgress = 0;
     }
 
@@ -167,7 +172,7 @@ public class WindowsRegistryConfigurationProvider : ConfigurationProvider, IDisp
                         change: RegistryChangeNotificationFilters.Subkey | RegistryChangeNotificationFilters.Value,
                         cancellationToken: token).ConfigureAwait(false);
 
-                    // This delay should help avoid triggering an excessive reloads before an entire subtree is completely written
+                    // This delay should help avoid triggering excessive reloads before an entire subtree is completely written
                     await Task.Delay(250, token).ConfigureAwait(false);
 
                     if (Interlocked.Exchange(ref _loadingInProgress, 1) == 0)

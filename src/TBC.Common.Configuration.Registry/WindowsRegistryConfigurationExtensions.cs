@@ -56,7 +56,11 @@ public static class WindowsRegistryConfigurationExtensions
         RegistryHive registryHive = RegistryHive.LocalMachine,
         bool optional = true)
     {
+#if NET
+        ArgumentNullException.ThrowIfNull(builder);
+#else
         _ = builder ?? throw new ArgumentNullException(nameof(builder));
+#endif
 
         if (IsWindows)
         {
@@ -85,7 +89,11 @@ public static class WindowsRegistryConfigurationExtensions
         this IConfigurationBuilder builder,
         Action<WindowsRegistryConfigurationSource>? configureSource)
     {
+#if NET
+        ArgumentNullException.ThrowIfNull(builder);
+#else
         _ = builder ?? throw new ArgumentNullException(nameof(builder));
+#endif
 
         if (IsWindows)
         {
