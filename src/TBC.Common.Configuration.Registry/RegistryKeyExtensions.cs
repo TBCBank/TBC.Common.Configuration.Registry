@@ -622,11 +622,11 @@ internal static partial class RegistryKeyExtensions
                 extern
 #endif
                 int RegNotifyChangeKeyValue(
-                SafeHandle hKey,
-                [MarshalAs(UnmanagedType.Bool)] bool bWatchSubtree,
-                REG_NOTIFY_FILTER dwNotifyFilter,
-                SafeHandle hEvent,
-                [MarshalAs(UnmanagedType.Bool)] bool fAsynchronous
+                    SafeHandle hKey,
+                    [MarshalAs(UnmanagedType.Bool)] bool bWatchSubtree,
+                    REG_NOTIFY_FILTER dwNotifyFilter,
+                    SafeHandle hEvent,
+                    [MarshalAs(UnmanagedType.Bool)] bool fAsynchronous
             );
         }
 
@@ -646,10 +646,10 @@ internal static partial class RegistryKeyExtensions
                 extern
 #endif
                 uint WaitForMultipleObjects(
-                uint nCount,
-                IntPtr* lpHandles,
-                [MarshalAs(UnmanagedType.Bool)] bool bWaitAll,
-                uint dwMilliseconds
+                    uint nCount,
+                    IntPtr* lpHandles,
+                    [MarshalAs(UnmanagedType.Bool)] bool bWaitAll,
+                    uint dwMilliseconds
             );
         }
     }
