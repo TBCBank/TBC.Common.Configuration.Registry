@@ -57,12 +57,12 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.*" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1*" />
 		<PackageReference Include="Microsoft.Win32.Registry" Version="5.*" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net471' ">
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.*" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1*" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
@@ -70,11 +70,11 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net9.0' ">
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.*" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.1*" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0' ">
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.*" />
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.1*" />
 	</ItemGroup>
 
 	<ItemGroup>
