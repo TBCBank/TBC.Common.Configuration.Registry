@@ -23,6 +23,7 @@ jobs:
       DOTNET_NOLOGO: 1
       POWERSHELL_TELEMETRY_OPTOUT: 1
       POWERSHELL_UPDATECHECK: 'Off'
+      TESTINGPLATFORM_TELEMETRY_OPTOUT: 1
 
     steps:
 
@@ -43,4 +44,5 @@ jobs:
 
     - name: Test
       run: |
-        dotnet test --no-build -c Release -p:TestTfmsInParallel=false --verbosity normal --no-vstest
+        # Registry tests share a key, so TFMs/modules must run sequentially.
+        dotnet test --no-build -c Release --max-parallel-test-modules 1 --verbosity normal

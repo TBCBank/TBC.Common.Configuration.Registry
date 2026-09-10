@@ -163,7 +163,7 @@ When invoked:
 
 ### xUnit
 
-- Packages: `Microsoft.NET.Test.Sdk`, `xunit`, `xunit.runner.visualstudio`
+- Packages: `xunit.v3.mtp-v2` (Microsoft Testing Platform)
 - No class attribute; use `[Fact]`
 - Parameterized tests: `[Theory]` with `[InlineData]`
 - Setup/teardown: constructor and `IDisposable`
@@ -172,6 +172,7 @@ When invoked:
 
 - Packages: only the `xunit.v3.mtp-v2` package is sufficient
 - `ITestOutputHelper` and `[Theory]` are in `Xunit`
+- Run tests with `dotnet test` in Microsoft Testing Platform mode (`global.json` `test.runner`)
 
 ### Assertions
 
