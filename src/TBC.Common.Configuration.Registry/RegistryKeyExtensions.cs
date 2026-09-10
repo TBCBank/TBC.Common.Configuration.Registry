@@ -4,8 +4,8 @@
 #nullable enable
 
 #pragma warning disable CA1031, CA1032, CA1064, CA2000
-#pragma warning disable MA0042, MA0048, MA0051, MA0071, MA0100, MA0134
-#pragma warning disable S3218, S3236, S3871, S4070
+#pragma warning disable MA0042, MA0048, MA0051, MA0071, MA0100, MA0134, MA0204
+#pragma warning disable S3218, S3236, S3871, S4070, S5766, S6640, S8969
 
 using System;
 using System.Collections.Generic;
