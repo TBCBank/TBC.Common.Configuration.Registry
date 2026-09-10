@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# $schema: https://json.schemastore.org/github-workflow.json
 
 name: NuGet
 
@@ -21,15 +21,16 @@ jobs:
       DOTNET_NOLOGO: 1
       POWERSHELL_TELEMETRY_OPTOUT: 1
       POWERSHELL_UPDATECHECK: 'Off'
+      TESTINGPLATFORM_TELEMETRY_OPTOUT: 1
 
     steps:
 
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         fetch-depth: 0
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v6
       with:
         global-json-file: global.json
 
@@ -46,7 +47,8 @@ jobs:
 
     - name: Test
       run: |
-        dotnet test --no-build -c Release -p:TestTfmsInParallel=false --verbosity normal
+        # Registry tests share a key, so TFMs/modules must run sequentially.
+        dotnet test --no-build -c Release --max-parallel-test-modules 1 --verbosity normal
 
     - name: Clean
       run: dotnet clean

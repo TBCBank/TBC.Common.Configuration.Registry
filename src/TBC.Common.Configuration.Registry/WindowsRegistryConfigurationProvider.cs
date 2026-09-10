@@ -22,7 +22,7 @@
 
 #nullable enable
 
-#pragma warning disable CA1031
+#pragma warning disable CA1031, S8969
 
 namespace TBC.Common.Configuration.Registry;
 

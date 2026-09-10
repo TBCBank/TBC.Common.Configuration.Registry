@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-#pragma warning disable MA0048, IDE0130, IDE0290
+#pragma warning disable MA0048, MA0206, IDE0130, IDE0290
 
 #if !NET
 
