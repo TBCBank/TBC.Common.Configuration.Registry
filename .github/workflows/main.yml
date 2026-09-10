@@ -1,4 +1,4 @@
-# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# $schema: https://json.schemastore.org/github-workflow.json
 
 name: CI
 
@@ -31,7 +31,7 @@ jobs:
         fetch-depth: 0
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v6
       with:
         global-json-file: global.json
 
@@ -43,4 +43,4 @@ jobs:
 
     - name: Test
       run: |
-        dotnet test --no-build -c Release -p:TestTfmsInParallel=false --verbosity normal
+        dotnet test --no-build -c Release -p:TestTfmsInParallel=false --verbosity normal --no-vstest
